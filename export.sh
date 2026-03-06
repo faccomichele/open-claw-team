@@ -37,5 +37,5 @@ done
 echo '...done'
 
 echo 'Restarting OpenClaw gateway...'
-systemctl --user restart openclaw
+systemctl --user restart openclaw-gateway.service
 echo '...done'
