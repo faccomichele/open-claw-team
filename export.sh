@@ -19,17 +19,35 @@ echo '...done'
 
 echo 'Syncing agent definitions to ~/.openclaw/openclaw.json...'
 MAIN_CONFIG=~/.openclaw/openclaw.json
-# Ensure main config exists with an agents object
+# Ensure main config exists with an agents list array
 if [ ! -f "$MAIN_CONFIG" ]; then
-  echo '{"agents":{}}' > "$MAIN_CONFIG"
+  echo '{"agents":{"list":[]}}' > "$MAIN_CONFIG"
 fi
 for workspace_json in workspace-*/openclaw.json; do
   if [ -f "$workspace_json" ]; then
-    agent_id=$(jq -r '.agentId' "$workspace_json")
+    agent_id=$(jq -r '.id' "$workspace_json")
+    skills=$(jq '.skills' "$workspace_json")
+    tools=$(jq '.tools' "$workspace_json")
     tmp_file=$(mktemp)
-    jq --argjson def "$(cat "$workspace_json")" \
-      ".agents[\"$agent_id\"] = \$def" \
-      "$MAIN_CONFIG" > "$tmp_file" \
+    # If agent already exists in the list, only update its skills and tools.
+    # Otherwise append a minimal entry {id, skills, tools} without disturbing
+    # any other attributes that may exist in the live config.
+    jq --arg id "$agent_id" \
+       --argjson skills "$skills" \
+       --argjson tools "$tools" '
+      if (.agents.list | map(.id) | index($id)) != null then
+        .agents.list = [
+          .agents.list[] |
+          if .id == $id then
+            .skills = $skills | .tools = $tools
+          else
+            .
+          end
+        ]
+      else
+        .agents.list += [{"id": $id, "skills": $skills, "tools": $tools}]
+      end
+    ' "$MAIN_CONFIG" > "$tmp_file" \
       && mv "$tmp_file" "$MAIN_CONFIG"
     echo "  Updated agent '$agent_id'"
   fi

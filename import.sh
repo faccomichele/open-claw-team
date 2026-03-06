@@ -22,11 +22,27 @@ MAIN_CONFIG=~/.openclaw/openclaw.json
 if [ -f "$MAIN_CONFIG" ]; then
   for workspace_json in workspace-*/openclaw.json; do
     if [ -f "$workspace_json" ]; then
-      agent_id=$(jq -r '.agentId' "$workspace_json")
-      agent_def=$(jq --arg id "$agent_id" '.agents[$id] // empty' "$MAIN_CONFIG")
-      if [ -n "$agent_def" ]; then
-        echo "$agent_def" > "$workspace_json"
-        echo "  Updated $workspace_json from main openclaw.json"
+      agent_id=$(jq -r '.id' "$workspace_json")
+      # Extract only skills and tools for this agent from the list array
+      live_skills=$(jq --arg id "$agent_id" \
+        '.agents.list[] | select(.id == $id) | .skills // empty' "$MAIN_CONFIG")
+      live_tools=$(jq --arg id "$agent_id" \
+        '.agents.list[] | select(.id == $id) | .tools // empty' "$MAIN_CONFIG")
+      updated=false
+      if [ -n "$live_skills" ]; then
+        tmp_file=$(mktemp)
+        jq --argjson skills "$live_skills" '.skills = $skills' \
+          "$workspace_json" > "$tmp_file" && mv "$tmp_file" "$workspace_json"
+        updated=true
+      fi
+      if [ -n "$live_tools" ]; then
+        tmp_file=$(mktemp)
+        jq --argjson tools "$live_tools" '.tools = $tools' \
+          "$workspace_json" > "$tmp_file" && mv "$tmp_file" "$workspace_json"
+        updated=true
+      fi
+      if [ "$updated" = true ]; then
+        echo "  Updated skills and tools in $workspace_json from main openclaw.json"
       fi
     fi
   done

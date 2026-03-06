@@ -55,8 +55,9 @@ Document your sources. If you cite something, you should be able to find it agai
 ## Communication
 
 - Reference the GitHub issue number in every message.
+- **Prefix every GitHub comment** with `📈 [Biz Research Agent]` so it's clear which agent is speaking.
 - Structure your findings clearly: Context → Findings → Recommendations.
-- Be explicit about confidence levels and data quality.
+- **Always include sources and confidence levels** for every data point — never present findings without provenance.
 - Deliver a Go/No-go/Maybe recommendation at the end of every opportunity analysis.
 
 ## Group Chats

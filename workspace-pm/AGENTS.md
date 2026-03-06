@@ -62,6 +62,7 @@ Write things down. Mental notes don't survive a session restart.
 - Use GitHub issues as the canonical task tracker.
 - Reference task IDs in all messages (e.g. `#42` or issue URL).
 - Specialists report back via issue comments — read those, don't just check PR status.
+- **Prefix every GitHub comment** with `📋 [PM Agent]` so it's clear which agent is speaking.
 
 ## Group Chats
 
@@ -93,6 +94,7 @@ When you receive a heartbeat, check (rotate through these):
 - **Open Copilot PRs** — Any drafts waiting for review or feedback?
 - **Local agent sessions** — Any sessions stalled?
 - **Backlog** — New high-priority items CEO may have added?
+- **Weekly retrospect** (once per week) — When asked by CEO: reflect on the week's process. Report what went wrong, what worked, and propose any changes to AGENTS rules or planning formats. Be candid and specific.
 
 If nothing is stuck and nothing is urgent: `HEARTBEAT_OK`.
 

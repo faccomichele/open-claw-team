@@ -58,6 +58,7 @@ This repository stores the **skills**, **agent workspace definitions**, and **co
 
 - Run `import.sh` to capture the current live state from your local OpenClaw deployment into the repo before committing.
 - Run `export.sh` after pulling the latest version from the repo to apply changes to the live deployment and restart the gateway.
+- `import.sh` and `export.sh` only update the `skills` and `tools` fields for each agent in `~/.openclaw/openclaw.json`, leaving all other agent attributes (e.g. `name`, `model`, runtime state) intact.
 - Never manually edit files inside `~/.openclaw/` directly when you intend to version-control the change — use the repo as the source of truth and export.
 
 ### Security & Privacy
@@ -77,10 +78,10 @@ This team runs as a **hybrid multi-agent system**. Understand both layers:
 | Agent | Workspace | Responsibility |
 |---|---|---|
 | **CEO** | `workspace-ceo` | Vision, strategy, final decisions — communicates via Telegram |
-| **PM/Coordinator** | `workspace-pm` _(planned)_ | Task breakdown, delegation, sprint tracking |
-| **Tech Lead** | `workspace-tech-lead` _(planned)_ | Architecture decisions, design reviews |
-| **Biz Research** | `workspace-biz-research` _(planned)_ | Market research, opportunity analysis |
-| **Cost Controller** | `workspace-cost-controller` _(planned)_ | Budget monitoring, spend analysis |
+| **PM/Coordinator** | `workspace-pm` | Task breakdown, delegation, sprint tracking |
+| **Tech Lead** | `workspace-tech-lead` | Architecture decisions, design reviews |
+| **Biz Research** | `workspace-biz-research` | Market research, opportunity analysis |
+| **Cost Controller** | `workspace-cost-controller` | Budget monitoring, spend analysis |
 
 ### GitHub Copilot Agents (run on GitHub)
 
@@ -98,6 +99,34 @@ Defined in `github_copilot_agents/` and deployed to `.github/copilot/agents/` in
 - **Code tasks** → PM creates a GitHub issue and assigns to `@copilot:<agent-name>` in the target repo.
 - **Non-code tasks** (research, cost analysis, architecture review) → PM spawns a local OpenClaw session.
 - **Never** assign both a Copilot agent and a local agent to the same issue.
+- **Max session depth = 2**: CEO → PM → Specialist. Specialists may not spawn further sessions.
+
+### Agent Identification Conventions
+
+Every agent prefixes its GitHub comments with its emoji and name so it is unambiguous which agent is speaking, even when all agents share the same GitHub account.
+
+| Agent | Comment prefix |
+|---|---|
+| CEO | `🧭 [CEO Agent]` |
+| PM/Coordinator | `📋 [PM Agent]` |
+| Tech Lead | `🔧 [Tech Lead Agent]` |
+| Biz Research | `📈 [Biz Research Agent]` |
+| Cost Controller | `📊 [Cost Controller Agent]` |
+| dev-backend (Copilot) | `👨‍💻 [dev-backend]` |
+| dev-frontend (Copilot) | `🎨 [dev-frontend]` |
+| dev-infra (Copilot) | `⚙️ [dev-infra]` |
+| test-specialist (Copilot) | `🧪 [test-specialist]` |
+
+For commits, set `GIT_AUTHOR_NAME` to identify the agent while keeping a shared bot email (e.g. `GIT_AUTHOR_NAME="Dev Backend Agent (bot)"`).
+
+### Human-Only Decisions
+
+The following are **non-delegable** — agents surface options and wait for explicit human approval:
+
+- Merging a PR to the main branch
+- Changing any budget cap in `ops/budget.yaml`
+- Entering a new product line or pivoting strategic direction
+- Enabling auto-merge or write access for any agent
 
 ---
 

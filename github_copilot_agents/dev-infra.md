@@ -63,6 +63,18 @@ tags = {
 - **Always** include rollback procedures
 - **Always** document infrastructure decisions
 
+## Task completion output
+
+Every completed task **must** end with a structured summary comment prefixed with `⚙️ [dev-infra]`:
+
+```
+⚙️ [dev-infra]
+**Files changed:** <list>
+**Tests run:** <test command + pass/fail result>
+**Suggested follow-up tasks:** <list or "none">
+**Backlog item to update:** <issue number or "none">
+```
+
 ## Operations checklist
 - [ ] All infrastructure changes are in version control (IaC)
 - [ ] Every new resource has `repo`, `env`, and `managed-by` tags
