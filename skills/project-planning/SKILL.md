@@ -1,7 +1,7 @@
 ---
 name: project-planning
-version: 1.0.0
-description: Read and update project planning documents - roadmap, vision, backlog files
+version: 1.1.0
+description: Read and update project planning documents - roadmap, vision, backlog files (per project repo)
 tools: [read, write, edit]
 author: faccomichele
 ---
@@ -9,6 +9,8 @@ author: faccomichele
 # Project Planning & Roadmap Management
 
 Maintain the shared planning documents that coordinate all agent work.
+
+> **Important:** All paths below are relative to the **target project repository**, not this team config repo. Each project has its own independent planning files. Never mix planning files across projects.
 
 ## Core Files
 
