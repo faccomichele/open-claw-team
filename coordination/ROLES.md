@@ -5,10 +5,10 @@
 | Agent | Workspace | Role | Escalation |
 |---|---|---|---|
 | CEO | `workspace-ceo` | Strategic advisor, orchestrator; communicates via Telegram | Human (direct chat) |
-| PM/Coordinator | `workspace-pm` _(planned)_ | Task breakdown, delegation to Copilot/OpenClaw agents, sprint tracking | CEO |
-| Tech Lead | `workspace-tech-lead` _(planned)_ | Architecture decisions, design reviews, owns Copilot instructions & skill files | PM → CEO |
-| Biz Research | `workspace-biz-research` _(planned)_ | Market research, opportunity analysis | PM |
-| Cost Controller | `workspace-cost-controller` _(planned)_ | Budget monitoring, spend analysis per project repo | PM |
+| PM/Coordinator | `workspace-pm` | Task breakdown, delegation to Copilot/OpenClaw agents, sprint tracking | CEO |
+| Tech Lead | `workspace-tech-lead` | Architecture decisions, design reviews, owns Copilot instructions & skill files | PM → CEO |
+| Biz Research | `workspace-biz-research` | Market research, opportunity analysis | PM |
+| Cost Controller | `workspace-cost-controller` | Budget monitoring, spend analysis per project repo | PM |
 
 > Add a row here whenever you deploy a new agent to the team. Run `export.sh` after.
 

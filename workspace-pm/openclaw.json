@@ -1,0 +1,29 @@
+{
+  "agentId": "pm",
+  "skills": [
+    "agent-coordination",
+    "github-issue-ops",
+    "github-projects-board",
+    "github-pr-ops",
+    "project-planning",
+    "telegram-notifications"
+  ],
+  "actions": {
+    "allow": [
+      "sessions_spawn",
+      "sessions_send",
+      "sessions_list",
+      "sessions_history",
+      "session_status",
+      "exec",
+      "read",
+      "write",
+      "message"
+    ],
+    "deny": [
+      "delete_file",
+      "rm"
+    ]
+  },
+  "notes": "PM is the only agent allowed to spawn sub-sessions (sessions_spawn). Specialists may not spawn sub-sessions — see coordination/PROTOCOLS.md delegation rules."
+}

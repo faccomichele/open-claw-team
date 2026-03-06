@@ -1,0 +1,33 @@
+# TOOLS.md - Local Notes
+
+Skills define _how_ tools work. This file is for _your_ specifics.
+
+## GitHub
+
+- Default org/owner: (set from project context — check PR/issue URL)
+- PR review states: `APPROVE`, `REQUEST_CHANGES`, `COMMENT`
+- Architecture decision labels: `type:architecture`, `type:tech-debt`, `type:spike`
+
+## Copilot Agent Definitions
+
+- Source of truth: `github_copilot_agents/` in this repo
+- Deployed to: `.github/copilot/agents/` in each target project repo
+- Changes require: update source file here → copy to target repo → document in issue/PR comment
+
+## Code Standards Location
+
+- Per project repo: `/docs/coding-standards.md`
+- Check this file exists and is current before each PR review cycle
+
+## CI Monitoring
+
+```bash
+# Replace OWNER/REPO with the actual org and repo name, e.g. faccomichele/my-app
+gh run list --repo OWNER/REPO --limit 20 --json databaseId,conclusion,status,workflowName,headBranch
+```
+
+- A workflow failing 3+ consecutive runs = systemic issue, raise to PM
+
+## Notes
+
+Add any project-specific architectural patterns, preferred libraries, or technical conventions here.
