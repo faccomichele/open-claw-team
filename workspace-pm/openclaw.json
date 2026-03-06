@@ -1,5 +1,5 @@
 {
-  "agentId": "pm",
+  "id": "pm",
   "skills": [
     "agent-coordination",
     "github-issue-ops",
@@ -8,7 +8,7 @@
     "project-planning",
     "telegram-notifications"
   ],
-  "actions": {
+  "tools": {
     "allow": [
       "sessions_spawn",
       "sessions_send",
@@ -24,6 +24,5 @@
       "delete_file",
       "rm"
     ]
-  },
-  "notes": "PM is the only agent allowed to spawn sub-sessions (sessions_spawn). Specialists may not spawn sub-sessions — see coordination/PROTOCOLS.md delegation rules."
+  }
 }

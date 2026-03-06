@@ -97,7 +97,7 @@ Copilot will iterate and push new commits.
 
 // Via sessions_spawn tool for research/ops tasks
 {
-  "agentId": "biz-research",
+  "id": "biz-research",
   "message": "Research opportunity: AI-powered code review SaaS\n\nContext:\n- Issue: #85\n- Market: Developer tools, B2B SaaS\n- Budget constraint: Validate with <$5K investment\n\nDeliverables:\n1. Market analysis in /business/opportunities/code-review-saas.md\n2. TAM/SAM/SOM estimates\n3. Competitor landscape\n4. Recommendation: Go/No-go"
 }
 
@@ -233,7 +233,7 @@ gh issue edit 42 --repo OWNER/REPO --add-assignee "@copilot:dev-backend" --add-l
 ### PM spawns local research agent
 
 {
-  "agentId": "biz-research",
+  "id": "biz-research",
   "message": "Research opportunity: AI-powered code review SaaS targeting mid-size engineering teams\n\nContext:\n- GitHub issue: #85\n- Market hypothesis: Teams want automated PR reviews beyond linting\n- Geographic focus: North America, Europe\n- Success criteria: TAM >$500M, <10 strong competitors\n\nRequirements:\n1. Market size estimation (TAM/SAM/SOM)\n2. Identify top 10 competitors with pricing\n3. Assess distribution channels (developer-led, sales-led)\n4. Technical feasibility (can we build with current stack?)\n5. Business model options\n\nDeliverables:\n1. Full analysis: /business/opportunities/ai-code-review.md\n2. Summary comment on issue #85\n3. Recommendation: Go/No-go/Maybe with rationale\n\nTimeline: Complete within 48 hours"
 }
 

@@ -1,5 +1,5 @@
 {
-  "agentId": "tech-lead",
+  "id": "tech-lead",
   "skills": [
     "github-pr-ops",
     "git-operations",
@@ -7,7 +7,7 @@
     "github-issue-ops",
     "project-planning"
   ],
-  "actions": {
+  "tools": {
     "allow": [
       "exec",
       "read",
@@ -19,6 +19,5 @@
       "delete_file",
       "rm"
     ]
-  },
-  "notes": "Tech Lead may NOT spawn sub-sessions — only PM can delegate. Tech Lead owns github_copilot_agents/ and skills/; no other agent may edit those without Tech Lead review."
+  }
 }

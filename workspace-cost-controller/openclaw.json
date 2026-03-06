@@ -1,12 +1,12 @@
 {
-  "agentId": "cost-controller",
+  "id": "cost-controller",
   "skills": [
     "cost-tracking",
     "github-issue-ops",
     "telegram-notifications",
     "project-planning"
   ],
-  "actions": {
+  "tools": {
     "allow": [
       "read",
       "write",
@@ -19,6 +19,5 @@
       "delete_file",
       "rm"
     ]
-  },
-  "notes": "Cost Controller has Telegram access (message) for critical budget alerts to CEO. No sub-session spawning (PM only). No file deletion — budget data must be preserved."
+  }
 }

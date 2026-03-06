@@ -1,11 +1,11 @@
 {
-  "agentId": "biz-research",
+  "id": "biz-research",
   "skills": [
     "business-research",
     "github-issue-ops",
     "project-planning"
   ],
-  "actions": {
+  "tools": {
     "allow": [
       "web_search",
       "web_fetch",
@@ -20,6 +20,5 @@
       "delete_file",
       "rm"
     ]
-  },
-  "notes": "Biz Research is a read/write/search specialist. No sub-session spawning (PM only). No Telegram access (route through PM). No exec — shell commands are not part of research workflow."
+  }
 }

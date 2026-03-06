@@ -11,16 +11,15 @@ The `import.sh` / `export.sh` scripts sync them with the main `~/.openclaw/openc
 
 ```json
 {
-  "agentId": "<agent-name>",
+  "id": "<agent-name>",
   "skills": [
     "<skill-name>",
     "..."
   ],
-  "actions": {
+  "tools": {
     "allow": ["<action>", "..."],
     "deny":  ["<action>", "..."]
-  },
-  "notes": "Human-readable explanation of any non-obvious choices."
+  }
 }
 ```
 
@@ -31,11 +30,13 @@ The main runtime config aggregates all agent definitions under an `agents` objec
 ```json
 {
   "agents": {
-    "ceo":            { "agentId": "ceo", "skills": [...], "actions": {...}, "notes": "..." },
-    "pm":             { "agentId": "pm",  "skills": [...], "actions": {...}, "notes": "..." },
-    "tech-lead":      { ... },
-    "biz-research":   { ... },
-    "cost-controller":{ ... }
+    "list": [
+      { "id": "ceo", "skills": [...], "tools": {...} },
+      { "id": "pm",  "skills": [...], "tools": {...} },
+      { ... },
+      { ... },
+      { ... }
+    ]
   }
 }
 ```

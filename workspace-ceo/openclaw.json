@@ -1,12 +1,12 @@
 {
-  "agentId": "ceo",
+  "id": "ceo",
   "skills": [
     "agent-coordination",
     "telegram-notifications",
     "project-planning",
     "github-issue-ops"
   ],
-  "actions": {
+  "tools": {
     "allow": [
       "sessions_spawn",
       "sessions_send",
@@ -22,6 +22,5 @@
       "rm",
       "exec"
     ]
-  },
-  "notes": "CEO has full session orchestration (spawns PM only) and Telegram access for human communication. No exec — CEO does not touch the filesystem directly; all code and analysis work is delegated through PM."
+  }
 }
