@@ -18,12 +18,89 @@ Every agent **must** read the following at the start of each session (in order):
 - Specialists report back via GitHub issue comments or direct session messages — never by editing another agent's workspace files.
 - One delegation per task — do not assign Copilot AND spawn local for the same issue.
 
+### Delegation guardrails
+
+- **No ping-pong**: delegate a task at most once. If the assignee cannot complete it, escalate to PM — do not re-delegate.
+- **Every new task must reference a business goal** from `docs/vision.md` or `docs/roadmap.md` in the target project repo. No tasks spawned for their own sake.
+- **Max session depth = 2**: CEO → PM → Specialist. Specialists may not spawn further sessions.
+- `sessions_spawn` is **disabled** for specialist agents (`biz-research`, `cost-controller`, `tech-lead`) — they receive work, they do not sub-delegate.
+
 ## Communication Conventions
 
 - Use GitHub issues as the canonical task tracker.
 - Status updates go in issue comments (not Telegram, not workspace files).
 - Telegram is reserved for **human-facing** notifications only.
 - All inter-agent messages must include a task reference (e.g. `TASK-42` or issue URL).
+
+### Comment signing
+
+Every agent **must** prefix its GitHub issue and PR comments with its identifier emoji and name. This makes it clear which agent wrote what, even when all agents share the same GitHub account.
+
+| Agent | Prefix |
+|---|---|
+| CEO | `🧭 [CEO Agent]` |
+| PM/Coordinator | `📋 [PM Agent]` |
+| Tech Lead | `🔧 [Tech Lead Agent]` |
+| Biz Research | `📈 [Biz Research Agent]` |
+| Cost Controller | `📊 [Cost Controller Agent]` |
+| dev-backend (Copilot) | `👨‍💻 [dev-backend]` |
+| dev-frontend (Copilot) | `🎨 [dev-frontend]` |
+| dev-infra (Copilot) | `⚙️ [dev-infra]` |
+| test-specialist (Copilot) | `🧪 [test-specialist]` |
+
+### Commit author naming
+
+When an agent writes commits, set the git author name to identify the agent (while keeping the shared bot email):
+
+```bash
+GIT_AUTHOR_NAME="<Agent Name> (bot)"
+GIT_AUTHOR_EMAIL="yourname-bot@users.noreply.github.com"
+```
+
+Example: `GIT_AUTHOR_NAME="Dev Backend Agent (bot)"`. This makes `git log --author="Dev Backend Agent"` work as an agent filter.
+
+### Label & ownership conventions
+
+Use these GitHub labels consistently across all project repos:
+
+| Label | Meaning |
+|---|---|
+| `owner:pm` | PM is responsible for driving this issue |
+| `owner:dev-backend` | dev-backend Copilot agent is assigned |
+| `owner:dev-frontend` | dev-frontend Copilot agent is assigned |
+| `owner:dev-infra` | dev-infra Copilot agent is assigned |
+| `owner:test-specialist` | test-specialist Copilot agent is assigned |
+| `owner:biz-research` | Biz Research local agent is assigned |
+| `owner:cost-controller` | Cost Controller local agent is assigned |
+| `owner:tech-lead` | Tech Lead local agent is assigned |
+| `type:feature` | New feature work |
+| `type:bug` | Bug fix |
+| `type:research` | Market / technical research |
+| `type:cost` | Cost / budget analysis |
+
+PM is responsible for keeping `owner:*` labels accurate at all times.
+
+### CI check naming
+
+When agents are wired into CI workflows, use these check names so the Checks tab is unambiguous:
+
+| Check name | Owner |
+|---|---|
+| `PM Agent – planning check` | PM |
+| `Tech Lead – architecture review` | Tech Lead |
+| `QA Agent – test summary` | test-specialist |
+| `Cost Controller – budget check` | Cost Controller |
+
+## Human-Only Decisions
+
+The following decisions are **non-delegable** — agents must surface options and wait for explicit human approval:
+
+- Merging a PR to the main branch
+- Changing any budget cap in `ops/budget.yaml`
+- Entering a new product line or pivoting strategic direction
+- Enabling auto-merge or write access for any agent
+
+Agents **propose**; the human **approves** via GitHub (merges) or Telegram command.
 
 ## Per-Repo Work Items
 

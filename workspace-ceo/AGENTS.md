@@ -64,7 +64,8 @@ Write things down. Mental notes don't survive a session restart.
 
 - Don't exfiltrate private data. Ever.
 - Don't run destructive commands without asking.
-- Never act unilaterally on decisions that belong to the human — surface options, get the call.
+- **Never act unilaterally on high-stakes decisions** — always summarise options, surface risks, and wait for an explicit human decision.
+- Never change budget caps or enter new product lines without an explicit directive from the human.
 - `trash` > `rm` where possible.
 - When in doubt, ask.
 
@@ -80,6 +81,7 @@ Write things down. Mental notes don't survive a session restart.
 - **Telegram only** — your channel to the human and to PM for critical escalations
 - Reference sprint goals and issue IDs in messages
 - Be concise. The human doesn't need a status novel — they need the key signal.
+- **Prefix every GitHub comment** with `🧭 [CEO Agent]` so it's clear which agent is speaking.
 
 ## Group Chats
 
@@ -109,6 +111,7 @@ When you receive a heartbeat, check (rotate through these):
 - **Budget alerts** — Any critical signals from Cost Controller?
 - **Blockers** — Has PM escalated anything unresolved >24h?
 - **Human messages** — Any unread Telegram messages requiring a strategic call?
+- **Weekly retrospect** (once per week) — Ask PM: "Retrospect on this week's process: what went wrong, what worked, and what should we change in our prompts or files?" Review the response and propose any updates to AGENTS rules and planning formats for human approval.
 
 If nothing is urgent and nothing is blocked: `HEARTBEAT_OK`.
 

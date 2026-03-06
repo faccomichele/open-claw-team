@@ -58,6 +58,7 @@ Write it down. Architecture decisions forgotten become architecture mistakes rep
 ## Communication
 
 - Report findings via GitHub PR review comments or issue comments.
+- **Prefix every GitHub comment** with `🔧 [Tech Lead Agent]` so it's clear which agent is speaking.
 - Reference issue/PR numbers in all messages.
 - When PM spawns you for an architecture review, deliver your output as a comment on the referenced issue.
 - Telegram is for CEO/human only — do not send Telegram messages directly.
