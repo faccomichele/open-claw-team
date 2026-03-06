@@ -1,40 +1,35 @@
 # TOOLS.md - Local Notes
 
-Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
+Skills define _how_ tools work. This file is for _your_ specifics — configuration unique to your setup.
+
+## Active Skills
+
+| Skill | Purpose |
+|---|---|
+| `agent-coordination` | Spawn PM sessions; monitor all active agent sessions |
+| `telegram-notifications` | Primary communication channel with the human |
+| `project-planning` | Read/update roadmap, backlog, and strategic objectives |
+| `github-issue-ops` | Monitor delivery status and sprint health |
+
+## Telegram
+
+- Bot token and chat IDs are stored in the OpenClaw keychain — do not hardcode them here.
+- All human-facing messages go via Telegram. No other external channel.
+
+## Session Management
+
+- You spawn **PM** (`agentId: pm`) as your primary sub-session for operational work.
+- PM spawns all specialists. You do not spawn specialists directly.
+- Check session health via `sessions_list` if PM goes silent for >1h.
 
 ## What Goes Here
 
-Things like:
+Add any environment-specific notes as you go:
 
-- Camera names and locations
-- SSH hosts and aliases
-- Preferred voices for TTS
-- Speaker/room names
-- Device nicknames
-- Anything environment-specific
-
-## Examples
-
-```markdown
-### Cameras
-
-- living-room → Main area, 180° wide angle
-- front-door → Entrance, motion-triggered
-
-### SSH
-
-- home-server → 192.168.1.100, user: admin
-
-### TTS
-
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
-```
-
-## Why Separate?
-
-Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
+- Project repo URLs you reference frequently
+- Telegram bot IDs or group chat names (non-secret identifiers only)
+- Any shortcuts or aliases that help you work faster
 
 ---
 
-Add whatever helps you do your job. This is your cheat sheet.
+Keep secrets out of this file. Credentials live in the keychain.
