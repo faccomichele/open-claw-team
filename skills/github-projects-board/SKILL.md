@@ -6,7 +6,7 @@ requires:
   binaries: [gh]
   env: [GITHUB_TOKEN]
 tools: [exec, read]
-author: startup-team
+author: faccomichele
 ---
 
 # GitHub Projects Board Operations

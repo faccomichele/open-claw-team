@@ -6,7 +6,7 @@ requires:
   binaries: [gh, git]
   env: [GITHUB_TOKEN]
 tools: [exec, read, write]
-author: startup-team
+author: faccomichele
 ---
 
 # GitHub Pull Request Operations

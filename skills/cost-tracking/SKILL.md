@@ -3,7 +3,7 @@ name: cost-tracking
 version: 1.0.0
 description: Track infrastructure costs, token usage, and budget compliance
 tools: [read, write, exec]
-author: startup-team
+author: faccomichele
 ---
 
 # Cost Tracking & Budget Control

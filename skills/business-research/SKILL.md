@@ -3,7 +3,7 @@ name: business-research
 version: 1.0.0
 description: Conduct market research and business opportunity analysis
 tools: [web_search, web_fetch, read, write]
-author: startup-team
+author: faccomichele
 ---
 
 # Business Opportunity Research

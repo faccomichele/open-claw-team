@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo 'Importing Skills...'
-cp -Rf ~/.openclaw/skills/ ./skills
+cp -Rf ~/.openclaw/skills .
 echo '...done'
 
 echo 'Importing Agents...'

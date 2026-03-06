@@ -3,7 +3,7 @@ name: project-planning
 version: 1.0.0
 description: Read and update project planning documents - roadmap, vision, backlog files
 tools: [read, write, edit]
-author: startup-team
+author: faccomichele
 ---
 
 # Project Planning & Roadmap Management

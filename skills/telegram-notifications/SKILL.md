@@ -5,7 +5,7 @@ description: Send alerts and summaries to Telegram CEO/notifications channel
 requires:
   config: [channels.telegram.enabled]
 tools: [message]
-author: startup-team
+author: faccomichele
 ---
 
 # Telegram Notification Skill

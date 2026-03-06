@@ -5,7 +5,7 @@ description: Git commands for committing, branching, and pushing code changes
 requires:
   binaries: [git]
 tools: [exec, read]
-author: startup-team
+author: faccomichele
 ---
 
 # Git Operations

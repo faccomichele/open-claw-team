@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo 'Exporting Skills...'
-cp -Rf ./skills ~/.openclaw/skills
+cp -Rf ./skills ~/.openclaw/
 echo '...done'
 
 echo 'Exporting Agents...'
