@@ -1,7 +1,7 @@
 ---
 name: cost-tracking
-version: 1.0.0
-description: Track infrastructure costs, token usage, and budget compliance
+version: 1.1.0
+description: Track infrastructure costs, token usage, and budget compliance (per project repo)
 tools: [read, write, exec]
 author: faccomichele
 ---
@@ -9,6 +9,8 @@ author: faccomichele
 # Cost Tracking & Budget Control
 
 Monitor spend across cloud, CI, and AI services against defined budgets.
+
+> **Important:** All paths below (`/ops/budget.yaml`, `/ops/costs.md`, `/ops/raw-costs/`) are relative to the **target project repository**. Each project manages its own budget independently. Never read or write cost files for one project into another project's repo.
 
 ## Core Files
 

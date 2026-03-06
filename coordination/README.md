@@ -8,10 +8,12 @@ Every agent should load the relevant files here at the start of each session to 
 
 | File | Purpose |
 |---|---|
-| `ROLES.md` | Who does what — agent names, responsibilities, escalation paths |
-| `SPRINT.md` | Current sprint goals, active tasks, and blockers |
+| `ROLES.md` | Who does what — agent names (OpenClaw + GitHub Copilot), responsibilities, escalation paths |
+| `SPRINT.md` | Cross-team status snapshot; per-project sprint boards live in each project repo |
 | `PROTOCOLS.md` | Inter-agent communication rules and collaboration conventions |
 
 ---
 
 Keep these files **short and actionable** — agents load them on every session, so size directly affects token usage.
+
+> **Note:** Project-specific work items (roadmap, backlog, sprint board, budget) are **not** stored here. They live in each project repository under `docs/` and `ops/`. See `PROTOCOLS.md` for the full convention.
