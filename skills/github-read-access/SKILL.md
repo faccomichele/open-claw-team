@@ -86,7 +86,7 @@ gh search code QUERY --repo OWNER/REPO --json path,textMatches
 
 ## Best Practices
 
-- **Never write, push, or merge** — this skill grants read access only; always use `gh repo clone` to a `/tmp/` path
+- **Never write, push, or merge** — this skill grants read access only; always clone to a dedicated temporary workspace directory (e.g. the agent's designated scratch folder) rather than a production working directory
 - **Always use `--json`** when parsing output programmatically to avoid brittle text parsing
 - **Respect rate limits** — batch related reads into a single `gh api` call with GraphQL where possible
 - **Announce intent** — prefix any comment or message that results from a read operation with your agent identifier (e.g., `🧭 [CEO Agent]`)

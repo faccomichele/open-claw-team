@@ -31,6 +31,19 @@ gh api /orgs/ORG/settings/billing/actions
 - `github_actions` — CI/CD minutes (via `gh api`)
 - `openclaw_tokens` — LLM API costs (from token logs)
 
+## AWS Cost Explorer
+
+```bash
+# Last 30 days, grouped by service
+aws ce get-cost-and-usage \
+  --time-period Start=$(date -d '-30 days' +%Y-%m-%d),End=$(date +%Y-%m-%d) \
+  --granularity MONTHLY \
+  --metrics BlendedCost \
+  --group-by Type=DIMENSION,Key=SERVICE \
+  --query 'ResultsByTime[*].Groups[*].{Service:Keys[0],Cost:Metrics.BlendedCost.Amount}' \
+  --output table
+```
+
 ## Status Emoji Convention
 
 - ✅ Healthy (< 70%)

@@ -5,7 +5,9 @@
     "git-operations",
     "github-actions-ci",
     "github-issue-ops",
-    "project-planning"
+    "project-planning",
+    "aws-cli",
+    "terraform"
   ],
   "tools": {
     "allow": [
