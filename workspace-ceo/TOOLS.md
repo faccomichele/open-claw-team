@@ -10,6 +10,7 @@ Skills define _how_ tools work. This file is for _your_ specifics — configurat
 | `telegram-notifications` | Primary communication channel with the human |
 | `project-planning` | Read/update roadmap, backlog, and strategic objectives |
 | `github-issue-ops` | Monitor delivery status and sprint health |
+| `github-read-access` | Read-only GitHub browsing and repo cloning for configuration inspection |
 
 ## Telegram
 

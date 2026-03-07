@@ -4,7 +4,8 @@
     "agent-coordination",
     "telegram-notifications",
     "project-planning",
-    "github-issue-ops"
+    "github-issue-ops",
+    "github-read-access"
   ],
   "tools": {
     "allow": [
@@ -15,12 +16,12 @@
       "session_status",
       "message",
       "read",
-      "write"
+      "write",
+      "exec"
     ],
     "deny": [
       "delete_file",
-      "rm",
-      "exec"
+      "rm"
     ]
   }
 }
