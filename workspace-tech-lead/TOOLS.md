@@ -28,6 +28,13 @@ gh run list --repo OWNER/REPO --limit 20 --json databaseId,conclusion,status,wor
 
 - A workflow failing 3+ consecutive runs = systemic issue, raise to PM
 
+## AWS / Infrastructure
+
+- IaC files live under `infra/` or `terraform/` in each target project repo
+- Always use `terraform plan` and attach output to the relevant PR before applying
+- CloudFormation stacks: use `aws cloudformation describe-stacks` to inspect deployed state
+- Tag all resources: `repo`, `env` (`DEV`/`PROD`), `managed-by` (`terraform`)
+
 ## Notes
 
 Add any project-specific architectural patterns, preferred libraries, or technical conventions here.

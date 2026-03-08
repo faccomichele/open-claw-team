@@ -4,7 +4,8 @@
     "cost-tracking",
     "github-issue-ops",
     "telegram-notifications",
-    "project-planning"
+    "project-planning",
+    "aws-cli"
   ],
   "tools": {
     "allow": [
