@@ -68,7 +68,7 @@ The table below lists the most significant allowed/denied actions per agent. See
 | Agent | Key Allowed | Key Denied | Rationale |
 |---|---|---|---|
 | **ceo** | `sessions_spawn`, `sessions_send`, `sessions_list`, `sessions_history`, `session_status`, `message`, `read`, `write` | `exec`, `delete_file`, `rm` | CEO orchestrates PM via sessions; Telegram for human comms; no filesystem exec |
-| **pm** | `sessions_spawn`, `sessions_send`, `message` | `delete_file`, `rm` | Only PM may delegate sub-sessions |
+| **pm** | `sessions_spawn`, `sessions_send`, `message`, `read`, `write`, `exec` | `delete_file`, `rm` | PM is persistent; may delegate sub-sessions and send Telegram notifications (PR merge, sprint done, blockers) |
 | **tech-lead** | `exec`, `read`, `write` | `sessions_spawn`, `message` | Reviews only; no delegation, no Telegram |
 | **biz-research** | `web_search`, `web_fetch`, `read`, `write` | `sessions_spawn`, `exec`, `message` | Research only; no shell, no delegation, no Telegram |
 | **cost-controller** | `exec`, `read`, `write`, `message` | `sessions_spawn`, `delete_file` | Needs Telegram for critical alerts; no spawning |
@@ -76,6 +76,7 @@ The table below lists the most significant allowed/denied actions per agent. See
 ## Rules
 
 - Only **CEO** and **PM** may use `sessions_spawn` and `sessions_send`. CEO spawns PM only; PM spawns specialists.
-- Only **CEO** and **Cost Controller** have `message` (Telegram) access — all other agents route through PM.
+- **CEO**, **PM**, and **Cost Controller** have `message` (Telegram) access. All other agents route through PM or CEO.
+- PM must be spawned with `mode="session"` (persistent) at sprint start — do not spawn as one-shot (`mode="run"`).
 - `delete_file` and `rm` are denied for all agents by default — data preservation is a priority.
 - The `deny` list takes precedence over `allow`.

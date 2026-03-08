@@ -25,12 +25,39 @@ Every agent **must** read the following at the start of each session (in order):
 - **Max session depth = 2**: CEO → PM → Specialist. Specialists may not spawn further sessions.
 - `sessions_spawn` is **disabled** for specialist agents (`biz-research`, `cost-controller`, `tech-lead`) — they receive work, they do not sub-delegate.
 
+## Sprint Kickoff Workflow
+
+When starting a sprint:
+
+1. CEO updates `coordination/SPRINT.md` with the sprint goal and top-priority issues.
+2. CEO spawns PM as a **persistent session** (`mode="session"`) — PM runs indefinitely, does not exit between tasks:
+   ```json
+   {
+     "agentId": "pm",
+     "mode": "session",
+     "label": "PM",
+     "message": "Sprint goal: <X>. Priority: <Y>. Current backlog: issues #A-#B. Triage and assign."
+   }
+   ```
+3. PM reads `coordination/SPRINT.md`, triages the backlog, and delegates tasks immediately.
+4. PM enters its heartbeat loop (~ 30 minutes), autonomously checking PRs, stuck issues, and stale sessions.
+5. PM escalates blockers to CEO (via `sessions_send`) and notifies the human directly via Telegram for merge-ready PRs and sprint completions.
+6. CEO sends follow-ups with `sessions_send` — **does not re-spawn PM**. If PM session has died unexpectedly, CEO re-spawns it with current `coordination/SPRINT.md` context.
+
 ## Communication Conventions
 
 - Use GitHub issues as the canonical task tracker.
 - Status updates go in issue comments (not Telegram, not workspace files).
-- Telegram is reserved for **human-facing** notifications only.
+- Telegram is used for **human-facing notifications** — both CEO and PM may send Telegram messages directly to the human.
 - All inter-agent messages must include a task reference (e.g. `TASK-42` or issue URL).
+
+### Telegram usage by agent
+
+| Agent | When to use Telegram |
+|---|---|
+| CEO | Strategic updates, decisions, sprint kickoff instructions |
+| PM | PR ready for merge, sprint complete, critical blocker >24h, periodic summaries |
+| All others | Not permitted — route through PM or CEO |
 
 ### Comment signing
 
