@@ -23,7 +23,7 @@ These agents are defined in `github_copilot_agents/` and deployed to `.github/co
 | dev-infra | `dev-infra.md` | CI/CD, IaC, deployments, infrastructure |
 | test-specialist | `test-specialist.md` | Testing, QA automation, coverage |
 
-> Copilot agents are assigned via GitHub issues (`@copilot:agent-name`). They do not have OpenClaw workspaces.
+> Copilot agents are assigned via `gh copilot suggest -p bash` (AI-powered CLI). See `skills/agent-coordination/SKILL.md` for the full delegation playbook. They do not have OpenClaw workspaces.
 
 ## Escalation Path
 

@@ -1,6 +1,6 @@
 ---
 name: agent-coordination
-version: 1.0.0
+version: 1.1.0
 description: Delegate tasks to GitHub Copilot coding agents (for dev work) or spawn local OpenClaw sessions (for research/ops)
 requires:
   config: [agents.list]
@@ -18,11 +18,11 @@ PM/Coordinator delegates work based on task type:
 
 | Task Type | Delegate To | Method |
 |-----------|-------------|--------|
-| Feature implementation | GitHub Copilot (custom dev agent) | Assign issue to `@copilot:dev-backend` |
-| Bug fix | GitHub Copilot (custom dev agent) | Assign issue to `@copilot:dev-frontend` |
-| Refactoring | GitHub Copilot (custom dev agent) | Assign issue to `@copilot:dev-backend` |
-| Infrastructure/DevOps | GitHub Copilot (custom infra agent) | Assign issue to `@copilot:dev-infra` |
-| Test writing | GitHub Copilot (test specialist) | Assign issue to `@copilot:test-specialist` |
+| Feature implementation | GitHub Copilot (custom dev agent) | `gh copilot suggest -p bash` → assign `dev-backend` |
+| Bug fix | GitHub Copilot (custom dev agent) | `gh copilot suggest -p bash` → assign `dev-frontend` |
+| Refactoring | GitHub Copilot (custom dev agent) | `gh copilot suggest -p bash` → assign `dev-backend` |
+| Infrastructure/DevOps | GitHub Copilot (custom infra agent) | `gh copilot suggest -p bash` → assign `dev-infra` |
+| Test writing | GitHub Copilot (test specialist) | `gh copilot suggest -p bash` → assign `test-specialist` |
 | Market research | OpenClaw Biz Research agent | `sessions_spawn` with agentId `biz-research` |
 | Cost analysis | OpenClaw Cost Controller agent | `sessions_spawn` with agentId `cost-controller` |
 | Architecture review | OpenClaw Tech Lead agent | `sessions_spawn` with agentId `tech-lead` |
@@ -43,20 +43,28 @@ Issue requirements for Copilot success:
 
 ### 2. Assign to appropriate custom Copilot agent
 
-gh issue edit ISSUE_NUMBER --repo OWNER/REPO --add-assignee "@copilot:agent-name"
+Use `gh copilot suggest` with the `-p` (pipe/non-interactive) flag to generate and execute the correct assignment command.
+Replace `ISSUE_NUMBER` with the issue number, `OWNER/REPO` with the repository, and the agent name with the appropriate custom agent:
 
-**Available custom Copilot agents** (you must create these first):
+```bash
+# Example: assign issue 42 in myorg/myrepo to dev-backend
+gh copilot suggest -p bash "assign issue ISSUE_NUMBER in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+```
 
-- `@copilot:dev-backend` - Backend specialist
-- `@copilot:dev-frontend` - Frontend specialist  
-- `@copilot:dev-infra` - Infrastructure & DevOps specialist
-- `@copilot:test-specialist` - Testing & QA specialist
+Replace `dev-backend` with the appropriate agent name:
+
+- `dev-backend` - Backend specialist
+- `dev-frontend` - Frontend specialist
+- `dev-infra` - Infrastructure & DevOps specialist
+- `test-specialist` - Testing & QA specialist
+
+> The `-p bash` flag makes `gh copilot suggest` non-interactive: it writes the suggested shell command directly to stdout so it can be piped or executed in scripts.
 
 ### 3. Add agent-specific context in issue body
 
 Include an **"Agent Instructions"** section:
 
-## Agent Instructions for @copilot:dev-backend
+## Agent Instructions for dev-backend
 
 **Your role**: You are a **senior backend engineer** specializing in Node.js/TypeScript APIs, database design, and integration patterns.
 
@@ -131,8 +139,12 @@ When moving a task to "In Progress":
 
 3. **For Copilot delegation (code tasks):**
    - Ensure issue has detailed requirements + agent instructions
-   - Assign to appropriate custom agent: `gh issue edit N --add-assignee "@copilot:agent-name"`
-   - Add label `status:in_progress`
+   - Add label and assign the custom Copilot agent in one step:
+     ```bash
+     # Replace ISSUE_NUMBER, OWNER/REPO, and the agent name as appropriate
+     gh issue edit ISSUE_NUMBER --repo OWNER/REPO --add-label "status:in_progress"
+     gh copilot suggest -p bash "assign issue ISSUE_NUMBER in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+     ```
    - Do NOT spawn local session
 
 4. **For local OpenClaw delegation (non-code):**
@@ -196,7 +208,7 @@ Create a Node.js module that fetches GitHub issues and updates `/ops/backlog.jso
 - [ ] No breaking changes to backlog.json structure
 - [ ] Error cases logged appropriately
 
-## Agent Instructions for @copilot:dev-backend
+## Agent Instructions for dev-backend
 
 **Your role**: Senior backend engineer specializing in Node.js/TypeScript, API integrations, and data transformation.
 
@@ -224,7 +236,11 @@ Create a Node.js module that fetches GitHub issues and updates `/ops/backlog.jso
 
 ### PM Agent Action
 
-gh issue edit 42 --repo OWNER/REPO --add-assignee "@copilot:dev-backend" --add-label "status:in_progress,owner:copilot-dev-backend"
+```bash
+# Replace 42 and OWNER/REPO with the actual issue number and repo
+gh issue edit 42 --repo OWNER/REPO --add-label "status:in_progress,owner:copilot-dev-backend"
+gh copilot suggest -p bash "assign issue 42 in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+```
 
 ## Example Delegation: Research Task (Local Agent)
 
@@ -240,10 +256,10 @@ gh issue edit 42 --repo OWNER/REPO --add-assignee "@copilot:dev-backend" --add-l
 ## Task Lifecycle Comparison
 
 ### Copilot Task (Code)
-PM: Assign to @copilot → Copilot: Draft PR → Copilot: Commits → PM: Review PR → Human: Merge
-         ↓                       ↓                    ↓                ↓              ↓
-   Track PR number      Watch for draft        Monitor commits    Request changes   Update backlog
-                                                                    if needed
+PM: gh copilot suggest -p bash → Copilot: Draft PR → Copilot: Commits → PM: Review PR → Human: Merge
+         ↓                              ↓                    ↓                ↓              ↓
+  assign custom agent             Watch for draft        Monitor commits    Request changes   Update backlog
+  (non-interactive CLI)                                                      if needed
 
 ### Local Task (Research/Ops)
 PM: Spawn session → Agent: Research → Agent: Write files → Agent: Report → PM: Verify

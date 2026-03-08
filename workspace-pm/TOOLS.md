@@ -16,10 +16,19 @@ Skills define _how_ tools work. This file is for _your_ specifics — setup deta
 
 ## Copilot Agents (GitHub issue assignment)
 
-- `@copilot:dev-backend` — Node.js/TypeScript backend
-- `@copilot:dev-frontend` — React/UI frontend
-- `@copilot:dev-infra` — CI/CD, IaC, infrastructure
-- `@copilot:test-specialist` — Testing and QA
+Use `gh copilot suggest -p bash` to assign custom agents (AI-powered CLI, non-interactive):
+
+```bash
+# Replace ISSUE_NUMBER and OWNER/REPO with actual values; replace dev-backend with the target agent
+gh copilot suggest -p bash "assign issue ISSUE_NUMBER in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+```
+
+Available agents (defined in `.github/copilot/agents/` of each target repo):
+
+- `dev-backend` — Node.js/TypeScript backend
+- `dev-frontend` — React/UI frontend
+- `dev-infra` — CI/CD, IaC, infrastructure
+- `test-specialist` — Testing and QA
 
 ## Notes
 
