@@ -8,6 +8,7 @@
     "project-planning",
     "aws-cli",
     "terraform",
+    "godaddy-cli",
     "self-improving",
     "perplexity-webui-search"
   ],

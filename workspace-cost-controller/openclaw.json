@@ -6,6 +6,7 @@
     "telegram-notifications",
     "project-planning",
     "aws-cli",
+    "godaddy-cli",
     "self-improving"
   ],
   "tools": {
