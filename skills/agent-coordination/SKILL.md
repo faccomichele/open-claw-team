@@ -18,11 +18,11 @@ PM/Coordinator delegates work based on task type:
 
 | Task Type | Delegate To | Method |
 |-----------|-------------|--------|
-| Feature implementation | GitHub Copilot (custom dev agent) | Assign via web UI: set assignee to `@copilot`, then select `dev-backend` |
-| Bug fix | GitHub Copilot (custom dev agent) | Assign via web UI: set assignee to `@copilot`, then select `dev-frontend` |
-| Refactoring | GitHub Copilot (custom dev agent) | Assign via web UI: set assignee to `@copilot`, then select `dev-backend` |
-| Infrastructure/DevOps | GitHub Copilot (custom infra agent) | Assign via web UI: set assignee to `@copilot`, then select `dev-infra` |
-| Test writing | GitHub Copilot (test specialist) | Assign via web UI: set assignee to `@copilot`, then select `test-specialist` |
+| Feature implementation | GitHub Copilot (custom dev agent) | `gh copilot suggest -p bash` → assign `dev-backend` |
+| Bug fix | GitHub Copilot (custom dev agent) | `gh copilot suggest -p bash` → assign `dev-frontend` |
+| Refactoring | GitHub Copilot (custom dev agent) | `gh copilot suggest -p bash` → assign `dev-backend` |
+| Infrastructure/DevOps | GitHub Copilot (custom infra agent) | `gh copilot suggest -p bash` → assign `dev-infra` |
+| Test writing | GitHub Copilot (test specialist) | `gh copilot suggest -p bash` → assign `test-specialist` |
 | Market research | OpenClaw Biz Research agent | `sessions_spawn` with agentId `biz-research` |
 | Cost analysis | OpenClaw Cost Controller agent | `sessions_spawn` with agentId `cost-controller` |
 | Architecture review | OpenClaw Tech Lead agent | `sessions_spawn` with agentId `tech-lead` |
@@ -43,22 +43,22 @@ Issue requirements for Copilot success:
 
 ### 2. Assign to appropriate custom Copilot agent
 
-> ⚠️ **Important:** The `gh` CLI does **not** support assigning custom Copilot agents directly with `@copilot:agent-name`. Use the GitHub web UI instead.
+Use `gh copilot suggest` with the `-p` (pipe/non-interactive) flag to generate and execute the correct assignment command.
+Replace `ISSUE_NUMBER` with the issue number, `OWNER/REPO` with the repository, and the agent name with the appropriate custom agent:
 
-**Web UI assignment steps:**
+```bash
+# Example: assign issue 42 in myorg/myrepo to dev-backend
+gh copilot suggest -p bash "assign issue ISSUE_NUMBER in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+```
 
-1. Open the GitHub issue in your browser
-2. In the **Assignees** panel (right sidebar), click the gear icon
-3. Search for **Copilot** and select it (the generic `@copilot` bot)
-4. GitHub will display a form asking which custom agent to use
-5. Select the appropriate agent from your repo's agent definitions
-
-**Available custom Copilot agents** (defined in `.github/copilot/agents/` of the target repo):
+Replace `dev-backend` with the appropriate agent name:
 
 - `dev-backend` - Backend specialist
 - `dev-frontend` - Frontend specialist
 - `dev-infra` - Infrastructure & DevOps specialist
 - `test-specialist` - Testing & QA specialist
+
+> The `-p bash` flag makes `gh copilot suggest` non-interactive: it writes the suggested shell command directly to stdout so it can be piped or executed in scripts.
 
 ### 3. Add agent-specific context in issue body
 
@@ -139,8 +139,12 @@ When moving a task to "In Progress":
 
 3. **For Copilot delegation (code tasks):**
    - Ensure issue has detailed requirements + agent instructions
-   - Add label `status:in_progress` via CLI: `gh issue edit N --repo OWNER/REPO --add-label "status:in_progress"`
-   - Assign the custom Copilot agent via GitHub web UI: open the issue, set Assignees to `@copilot`, then select the custom agent in the prompt
+   - Add label and assign the custom Copilot agent in one step:
+     ```bash
+     # Replace ISSUE_NUMBER, OWNER/REPO, and the agent name as appropriate
+     gh issue edit ISSUE_NUMBER --repo OWNER/REPO --add-label "status:in_progress"
+     gh copilot suggest -p bash "assign issue ISSUE_NUMBER in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+     ```
    - Do NOT spawn local session
 
 4. **For local OpenClaw delegation (non-code):**
@@ -233,11 +237,10 @@ Create a Node.js module that fetches GitHub issues and updates `/ops/backlog.jso
 ### PM Agent Action
 
 ```bash
-# Add labels via CLI
+# Replace 42 and OWNER/REPO with the actual issue number and repo
 gh issue edit 42 --repo OWNER/REPO --add-label "status:in_progress,owner:copilot-dev-backend"
+gh copilot suggest -p bash "assign issue 42 in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
 ```
-
-> Then open the issue in the GitHub web UI, set **Assignees** to `@copilot`, and select the **dev-backend** custom agent from the prompt.
 
 ## Example Delegation: Research Task (Local Agent)
 
@@ -253,10 +256,10 @@ gh issue edit 42 --repo OWNER/REPO --add-label "status:in_progress,owner:copilot
 ## Task Lifecycle Comparison
 
 ### Copilot Task (Code)
-PM: Assign @copilot (web UI) → Copilot: Draft PR → Copilot: Commits → PM: Review PR → Human: Merge
-         ↓                           ↓                    ↓                ↓              ↓
-  Select custom agent          Watch for draft        Monitor commits    Request changes   Update backlog
-  in web UI prompt                                                        if needed
+PM: gh copilot suggest -p bash → Copilot: Draft PR → Copilot: Commits → PM: Review PR → Human: Merge
+         ↓                              ↓                    ↓                ↓              ↓
+  assign custom agent             Watch for draft        Monitor commits    Request changes   Update backlog
+  (non-interactive CLI)                                                      if needed
 
 ### Local Task (Research/Ops)
 PM: Spawn session → Agent: Research → Agent: Write files → Agent: Report → PM: Verify

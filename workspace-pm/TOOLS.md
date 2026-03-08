@@ -16,7 +16,14 @@ Skills define _how_ tools work. This file is for _your_ specifics — setup deta
 
 ## Copilot Agents (GitHub issue assignment)
 
-> ⚠️ Custom agents must be assigned via the GitHub web UI: set the issue assignee to `@copilot`, then select the custom agent from the prompt. The `@copilot:agent-name` CLI syntax does **not** work for custom agents.
+Use `gh copilot suggest -p bash` to assign custom agents (AI-powered CLI, non-interactive):
+
+```bash
+# Replace ISSUE_NUMBER and OWNER/REPO with actual values; replace dev-backend with the target agent
+gh copilot suggest -p bash "assign issue ISSUE_NUMBER in OWNER/REPO to the dev-backend custom GitHub Copilot agent" | bash
+```
+
+Available agents (defined in `.github/copilot/agents/` of each target repo):
 
 - `dev-backend` — Node.js/TypeScript backend
 - `dev-frontend` — React/UI frontend

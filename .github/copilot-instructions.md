@@ -96,7 +96,7 @@ Defined in `github_copilot_agents/` and deployed to `.github/copilot/agents/` in
 
 ### Delegation Flow
 
-- **Code tasks** → PM creates a GitHub issue and assigns a custom Copilot agent via the GitHub web UI: set the issue assignee to `@copilot`, then select the custom agent from the prompt that appears.
+- **Code tasks** → PM creates a GitHub issue and assigns a custom Copilot agent via `gh copilot suggest -p bash` (AI-powered CLI, non-interactive). See `skills/agent-coordination/SKILL.md` for the full command.
 - **Non-code tasks** (research, cost analysis, architecture review) → PM spawns a local OpenClaw session.
 - **Never** assign both a Copilot agent and a local agent to the same issue.
 - **Max session depth = 2**: CEO → PM → Specialist. Specialists may not spawn further sessions.

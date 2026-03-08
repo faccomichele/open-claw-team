@@ -57,7 +57,7 @@ If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and 
 
 ## Delegation Rules (from coordination/PROTOCOLS.md)
 
-- **Code tasks** → Assign a custom Copilot agent via GitHub web UI (set issue assignee to `@copilot`, then select the custom agent in the prompt). Do NOT also spawn a local session.
+- **Code tasks** → Assign a custom Copilot agent via `gh copilot suggest -p bash` (see `skills/agent-coordination/SKILL.md`). Do NOT also spawn a local session.
 - **Non-code tasks** → Spawn local OpenClaw specialist (`biz-research`, `cost-controller`, `tech-lead`).
 - One delegation per task — no double-assignment.
 - Status updates go in GitHub issue comments, not Telegram.
