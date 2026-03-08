@@ -13,7 +13,7 @@ Every agent **must** read the following at the start of each session (in order):
 ## Delegation Rules
 
 - Only the **PM** agent may delegate tasks — either by assigning a GitHub issue to a Copilot agent, or by spawning a local OpenClaw session.
-- **Code tasks** → assign to `@copilot:<agent-name>` on a GitHub issue in the target project repo. Do NOT also spawn a local dev session for the same task.
+- **Code tasks** → assign to a custom Copilot agent on a GitHub issue via the GitHub web UI (set assignee to `@copilot`, then select the custom agent in the prompt). Do NOT also spawn a local dev session for the same task.
 - **Non-code tasks** (research, cost analysis, architecture) → spawn the appropriate local OpenClaw specialist.
 - Specialists report back via GitHub issue comments or direct session messages — never by editing another agent's workspace files.
 - One delegation per task — do not assign Copilot AND spawn local for the same issue.

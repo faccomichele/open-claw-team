@@ -29,7 +29,7 @@ User (CEO) → CEO Agent → PM Agent → [Decision Point]
                           ↓                               ↓
             Create detailed GitHub issue         Spawn local OpenClaw session
                           ↓                               ↓
-         Assign to @copilot:agent-name           biz-research / cost-controller
+         Assign @copilot via web UI (select agent)   biz-research / cost-controller
                           ↓                               ↓
               Copilot creates draft PR            Agent writes files/reports
                           ↓                               ↓

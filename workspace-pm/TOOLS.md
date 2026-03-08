@@ -16,10 +16,12 @@ Skills define _how_ tools work. This file is for _your_ specifics — setup deta
 
 ## Copilot Agents (GitHub issue assignment)
 
-- `@copilot:dev-backend` — Node.js/TypeScript backend
-- `@copilot:dev-frontend` — React/UI frontend
-- `@copilot:dev-infra` — CI/CD, IaC, infrastructure
-- `@copilot:test-specialist` — Testing and QA
+> ⚠️ Custom agents must be assigned via the GitHub web UI: set the issue assignee to `@copilot`, then select the custom agent from the prompt. The `@copilot:agent-name` CLI syntax does **not** work for custom agents.
+
+- `dev-backend` — Node.js/TypeScript backend
+- `dev-frontend` — React/UI frontend
+- `dev-infra` — CI/CD, IaC, infrastructure
+- `test-specialist` — Testing and QA
 
 ## Notes
 
