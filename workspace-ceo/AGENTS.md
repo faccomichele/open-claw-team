@@ -77,10 +77,28 @@ If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and 
 
 ## Delegation Rules
 
-- **Code tasks** → spawn PM, PM creates GitHub issues and assigns a custom Copilot agent via `gh copilot suggest -p bash` (see `skills/agent-coordination/SKILL.md`)
-- **Non-code tasks** → spawn PM, PM delegates to local OpenClaw specialist
+- **Code tasks** → spawn PM (persistent), PM creates GitHub issues and assigns a custom Copilot agent via `gh copilot suggest -p bash` (see `skills/agent-coordination/SKILL.md`)
+- **Non-code tasks** → spawn PM (persistent), PM delegates to local OpenClaw specialist
 - One delegation per task — no double-assignment
-- Status updates via GitHub issue comments; Telegram only for human-facing notifications
+- Status updates via GitHub issue comments; Telegram for human-facing notifications (CEO and PM may both notify the human)
+
+## Sprint Kickoff Workflow
+
+When starting a new sprint:
+
+1. Update `coordination/SPRINT.md` with the sprint goal and top-priority issues
+2. Spawn PM as a **persistent session** (`mode="session"`, `label="PM"`):
+   ```json
+   {
+     "agentId": "pm",
+     "mode": "session",
+     "label": "PM",
+     "message": "Sprint goal: <goal>. Priority: <priority>. Current backlog: issues #A-#B. Triage and assign."
+   }
+   ```
+3. PM runs autonomously, rotates through its heartbeat every ~ 30 minutes, and escalates blockers only
+4. To send follow-up instructions, use `sessions_send` with the PM session ID (do not re-spawn)
+5. PM will message the human directly via Telegram for PR merge requests, sprint completions, and critical blockers
 
 ## Communication
 
