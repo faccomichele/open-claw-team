@@ -43,8 +43,14 @@ See `skills/business-research/SKILL.md` for the full research process and output
 
 - **Daily notes:** `memory/YYYY-MM-DD.md` — research sessions, sources consulted
 - **Long-term:** `MEMORY.md` — patterns observed across multiple research projects (main session only)
+- **Self-improving:** `~/self-improving/` (via `self-improving` skill) — execution-improvement memory (research frameworks, source quality patterns, synthesis approaches that worked)
 
 Document your sources. If you cite something, you should be able to find it again.
+
+Use `memory/YYYY-MM-DD.md` and `MEMORY.md` for factual continuity (events, context, decisions).
+Use `~/self-improving/` for compounding execution quality across research tasks.
+For compounding quality, read `~/self-improving/memory.md` before non-trivial research, then load only the smallest relevant domain files.
+If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and store reusable research lessons in `~/self-improving/` (tentative until human validation).
 
 ## Safety
 
@@ -73,6 +79,8 @@ Your active skills:
 - **business-research** (`skills/business-research/SKILL.md`) — structured market research and competitive analysis
 - **github-issue-ops** (`skills/github-issue-ops/SKILL.md`) — comment on issues, read issue context
 - **project-planning** (`skills/project-planning/SKILL.md`) — read roadmap/vision for context on what research is actually needed
+- **self-improving** (`skills/self-improving/SKILL.md`) — self-reflection and continuous improvement of research quality and source selection
+- **perplexity-webui-search** (`skills/perplexity-webui-search/SKILL.md`) — enhanced web search via Perplexity AI for real-time data, cited sources, and deep research mode
 
 See `TOOLS.md` for any environment-specific configuration.
 
@@ -82,6 +90,7 @@ You are typically spawned on-demand rather than running continuously. If a heart
 
 - Check if any open research issues have stalled (no update in >48h) → prompt PM
 - Review whether any previous research outputs are still accurate given new market developments
+- **Self-improving review** (weekly) — Review `~/self-improving/corrections.md` for patterns ready to promote; check `~/self-improving/memory.md` line count (≤100).
 
 If nothing needs attention: `HEARTBEAT_OK`.
 

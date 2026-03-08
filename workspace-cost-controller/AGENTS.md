@@ -51,8 +51,14 @@ See `skills/cost-tracking/SKILL.md` for the full cost tracking workflow.
 
 - **Daily notes:** `memory/YYYY-MM-DD.md` — cost run outputs, alerts sent, issues created
 - **Long-term:** `MEMORY.md` — budget patterns, recurring cost drivers, seasonal trends (main session only)
+- **Self-improving:** `~/self-improving/` (via `self-improving` skill) — execution-improvement memory (cost analysis patterns, alert thresholds that worked, reporting approaches)
 
 Track last-run timestamps in `memory/heartbeat-state.json`.
+
+Use `memory/YYYY-MM-DD.md` and `MEMORY.md` for factual continuity (events, context, decisions).
+Use `~/self-improving/` for compounding execution quality across cost runs.
+For compounding quality, read `~/self-improving/memory.md` before non-trivial analysis, then load only the smallest relevant domain files.
+If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and store reusable cost analysis lessons in `~/self-improving/` (tentative until human validation).
 
 ## Safety
 
@@ -84,6 +90,7 @@ Your active skills:
 - **github-issue-ops** (`skills/github-issue-ops/SKILL.md`) — create and update budget tracking issues
 - **telegram-notifications** (`skills/telegram-notifications/SKILL.md`) — send critical budget alerts to CEO
 - **project-planning** (`skills/project-planning/SKILL.md`) — read project context and roadmap
+- **self-improving** (`skills/self-improving/SKILL.md`) — self-reflection and continuous improvement of cost analysis accuracy and alert calibration
 
 See `TOOLS.md` for any environment-specific configuration.
 
@@ -95,6 +102,7 @@ When you receive a heartbeat, check (rotate through):
 - **Budget thresholds** — Any category approaching warning (70%) or critical (90%)?
 - **GitHub CI costs** — `gh api /repos/OWNER/REPO/actions/cache/usage` for CI spend trends
 - **Pending recommendations** — Have any previous mitigation options been actioned?
+- **Self-improving review** (weekly) — Review `~/self-improving/corrections.md` for patterns ready to promote; check `~/self-improving/memory.md` line count (≤100).
 
 Track last-check timestamps in `memory/heartbeat-state.json`.
 

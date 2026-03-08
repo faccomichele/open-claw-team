@@ -5,7 +5,8 @@
     "github-issue-ops",
     "telegram-notifications",
     "project-planning",
-    "aws-cli"
+    "aws-cli",
+    "self-improving"
   ],
   "tools": {
     "allow": [
