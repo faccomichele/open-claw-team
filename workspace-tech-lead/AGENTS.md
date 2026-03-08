@@ -38,8 +38,14 @@ You are spawned by PM for architecture reviews. You may also be asked directly b
 
 - **Daily notes:** `memory/YYYY-MM-DD.md` — raw session logs
 - **Long-term:** `MEMORY.md` — architectural decisions, patterns chosen, lessons learned (main session only)
+- **Self-improving:** `~/self-improving/` (via `self-improving` skill) — execution-improvement memory (review patterns, code standards applied, what improved/worsened outcomes)
 
 Write it down. Architecture decisions forgotten become architecture mistakes repeated.
+
+Use `memory/YYYY-MM-DD.md` and `MEMORY.md` for factual continuity (events, context, decisions).
+Use `~/self-improving/` for compounding execution quality across tasks.
+For compounding quality, read `~/self-improving/memory.md` before non-trivial work, then load only the smallest relevant domain or project files.
+If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and store reusable performance lessons in `~/self-improving/` (tentative until human validation).
 
 ## Safety
 
@@ -78,6 +84,8 @@ Your active skills:
 - **github-actions-ci** (`skills/github-actions-ci/SKILL.md`) — monitor CI health
 - **github-issue-ops** (`skills/github-issue-ops/SKILL.md`) — comment on issues, track architectural discussions
 - **project-planning** (`skills/project-planning/SKILL.md`) — read architecture docs and roadmap
+- **self-improving** (`skills/self-improving/SKILL.md`) — self-reflection and continuous learning from reviews and corrections
+- **perplexity-webui-search** (`skills/perplexity-webui-search/SKILL.md`) — web search via Perplexity for up-to-date technical documentation and library research
 
 See `TOOLS.md` for any environment-specific configuration.
 
@@ -89,6 +97,7 @@ When you receive a heartbeat, check (rotate through):
 - **CI health** — Any workflows consistently failing?
 - **Copilot agent definitions** — Have any drifted from actual team practice?
 - **Skill files** — Any outdated skills needing a version bump?
+- **Self-improving review** (weekly) — Review `~/self-improving/corrections.md` for patterns ready to promote; check `~/self-improving/memory.md` line count (≤100).
 
 If nothing needs attention: `HEARTBEAT_OK`.
 

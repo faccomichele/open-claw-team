@@ -1,7 +1,7 @@
 ---
 name: perplexity-webui-search
 description: Perform web searches via Perplexity WebUI using Playwright automation. Extract answers, sources, and citations for research tasks.
-version: 1.0.0
+version: 1.1.0
 author: Michele Facco
 requires:
   skills:
@@ -24,13 +24,11 @@ metadata:
 
 Use this skill when you need to:
 
-\begin{itemize}
-\item Search for current, real-time information not in your training data
-\item Retrieve cited sources and references for factual claims
-\item Compare multiple perspectives on recent events or topics
-\item Access Perplexity Pro's unlimited searches without API costs
-\item Extract structured data from Perplexity's search results
-\end{itemize}
+- Search for current, real-time information not in your training data
+- Retrieve cited sources and references for factual claims
+- Compare multiple perspectives on recent events or topics
+- Access Perplexity Pro's unlimited searches without API costs
+- Extract structured data from Perplexity's search results
 
 **Do NOT use for:**
 - Questions answerable from your existing knowledge
@@ -43,18 +41,51 @@ Use this skill when you need to:
 
 Set these in your OpenClaw environment or `.env` file:
 
+```bash
 export PERPLEXITY_EMAIL="your-email@example.com"
 export PERPLEXITY_PASSWORD="your-password"
+```
 
 ### Playwright MCP Installation
 
 This skill requires the base `playwright-mcp` skill from ClawHub:
 
+```bash
 npx -y @lobehub/market-cli skills install Spiceman161/playwright-mcp
+```
 
 Verify Chromium is installed:
 
+```bash
 playwright install chromium
+```
+
+## MCP Playwright Tool Reference
+
+This skill uses the standard Playwright MCP tool set. Key rules:
+
+- **Always call `browser_snapshot()`** before interacting with elements — it returns the accessibility tree with `ref` identifiers for every interactive node.
+- **Use `ref` from the snapshot**, not CSS selectors, when calling `browser_type`, `browser_click`, or `browser_evaluate` on a specific element.
+- **`browser_press_key({ key })`** sends a global keypress (no element target needed).
+- **`browser_evaluate({ function: "() => { ... }" })`** runs JavaScript in the page context; the parameter is `function`, not `script`.
+- **`browser_wait_for({ text, time })`** waits for text to appear or for a fixed duration.
+- **`browser_file_upload({ paths })`** uploads local files after a file-chooser is triggered.
+
+### How to Use Refs from Snapshots
+
+`browser_snapshot()` returns an accessibility tree. Locate the element you need by scanning its `name`, `role`, or descriptive text, then pass its `ref` to the interaction tool. Example:
+
+```
+// Snapshot output (abbreviated):
+// - role: textbox  name: "Ask anything..."  ref: "e123"
+// - role: button   name: "Sign in"          ref: "e45"
+
+// Use the ref directly:
+await browser_type({ element: "Ask anything search input", ref: "e123", text: query });
+await browser_click({ element: "Sign in button", ref: "e45" });
+```
+
+All `ref` values in the code examples below are illustrative placeholders — replace them with the actual values returned by `browser_snapshot()` at runtime.
 
 ## Core Instructions
 
@@ -64,123 +95,137 @@ When the user requests information that requires web search, follow this sequenc
 
 #### Step 1: Navigate to Perplexity
 
-// Use playwright-mcp's browser_navigate tool
-await browser_navigate({
-  url: "https://www.perplexity.ai",
-  waitUntil: "networkidle"
-});
+```js
+// Navigate — no waitUntil parameter in MCP standard
+await browser_navigate({ url: "https://www.perplexity.ai" });
+```
 
 #### Step 2: Check Authentication State
 
-// Take snapshot to check if logged in
+```js
+// Take accessibility snapshot to inspect page state
 const snapshot = await browser_snapshot();
 
-// If login form visible, authenticate
-if (snapshot.includes("Sign in") || snapshot.includes("Log in")) {
-  await authenticatePerplexity();
+// Detect unauthenticated state: look for a "Sign in" or "Log in" button in the tree.
+// The snapshot text representation includes node names — check for these strings:
+const isLoggedOut = snapshot.toString().includes("Sign in") || snapshot.toString().includes("Log in");
+
+if (isLoggedOut) {
+  await authenticatePerplexity(snapshot);
 }
+```
 
 #### Step 3: Submit Query
 
-// Type into search input
+```js
+// Take a fresh snapshot to get the search textarea ref
+const snapshot = await browser_snapshot();
+// Identify the search textarea node in snapshot (ref is assigned by the accessibility tree)
+
 await browser_type({
-  selector: 'textarea[placeholder*="Ask anything"]',
+  element: "search input – Ask anything",  // human-readable description
+  ref: "<ref from snapshot>",              // ref returned by browser_snapshot
   text: userQuery
 });
 
-// Submit query (Enter key)
-await browser_press({
-  selector: 'textarea[placeholder*="Ask anything"]',
-  key: "Enter"
-});
+// Submit with Enter key (global keypress — no element ref needed)
+await browser_press_key({ key: "Enter" });
+```
 
 #### Step 4: Wait for Response
 
-// Wait for response container to appear
-// Perplexity streams responses, so wait for completion indicator
+```js
+// Wait until the "Stop generating" button disappears, indicating completion
+await browser_wait_for({ textGone: "Stop generating" });
+
+// Fallback: poll via browser_evaluate if browser_wait_for is insufficient
 await browser_evaluate({
-  script: `
-    new Promise((resolve) => {
-      const checkComplete = () => {
-        const stopButton = document.querySelector('[aria-label="Stop generating"]');
-        if (!stopButton || stopButton.disabled) {
-          resolve(true);
-        } else {
-          setTimeout(checkComplete, 500);
-        }
-      };
-      checkComplete();
-    });
-  `
+  function: `() => new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Response timeout')), 30000);
+    const check = () => {
+      const stopBtn = document.querySelector('[aria-label="Stop generating"]');
+      if (!stopBtn || stopBtn.disabled) { clearTimeout(timeout); resolve(true); }
+      else setTimeout(check, 500);
+    };
+    check();
+  })`
 });
+```
 
 #### Step 5: Extract Results
 
-// Extract answer text
-const answer = await browser_get_text({
-  selector: 'div[class*="answer"]'
+```js
+// Extract answer text via browser_evaluate (no browser_get_text in MCP standard)
+const answer = await browser_evaluate({
+  function: `() => {
+    const el = document.querySelector('[class*="answer"], [data-testid="answer"]');
+    return el ? el.innerText.trim() : "";
+  }`
 });
 
-// Extract sources
+// Extract citations
 const sources = await browser_evaluate({
-  script: `
-    Array.from(document.querySelectorAll('[data-testid="citation-link"]'))
-      .map(link => ({
-        title: link.textContent.trim(),
-        url: link.href,
-        number: link.getAttribute('data-citation-number')
-      }));
-  `
+  function: `() => Array.from(document.querySelectorAll('[data-testid="citation-link"]'))
+    .map(link => ({
+      title: link.textContent.trim(),
+      url: link.href,
+      number: link.getAttribute('data-citation-number')
+    }))`
 });
+```
 
 ### Authentication Helper
 
-async function authenticatePerplexity() {
-  // Click sign-in button
+```js
+async function authenticatePerplexity(snapshot) {
+  // Click the "Sign in" button — use ref from snapshot
   await browser_click({
-    selector: 'button:has-text("Sign in")'
+    element: "Sign in button",
+    ref: "<ref from snapshot>"
   });
-  
-  // Wait for email input
+
+  // Take new snapshot after the modal/form appears
+  const loginSnapshot = await browser_snapshot();
+
+  // Fill email
   await browser_type({
-    selector: 'input[type="email"]',
+    element: "email input",
+    ref: "<ref from loginSnapshot>",
     text: process.env.PERPLEXITY_EMAIL
   });
-  
-  // Click continue
+
+  // Click Continue
   await browser_click({
-    selector: 'button:has-text("Continue")'
+    element: "Continue button",
+    ref: "<ref from loginSnapshot>"
   });
-  
-  // Enter password
+
+  // Take snapshot again for the password screen
+  const pwSnapshot = await browser_snapshot();
+
+  // Fill password
   await browser_type({
-    selector: 'input[type="password"]',
+    element: "password input",
+    ref: "<ref from pwSnapshot>",
     text: process.env.PERPLEXITY_PASSWORD
   });
-  
-  // Submit
-  await browser_press({
-    selector: 'input[type="password"]',
-    key: "Enter"
-  });
-  
-  // Wait for redirect to home
-  await browser_navigate({
-    url: "https://www.perplexity.ai",
-    waitUntil: "networkidle"
-  });
+
+  // Submit with Enter (global keypress)
+  await browser_press_key({ key: "Enter" });
+
+  // Wait for home page to load
+  await browser_wait_for({ text: "Ask anything" });
 }
+```
 
 ## Response Format
 
 Structure your responses with:
 
-\begin{enumerate}
-\item \textbf{Direct Answer}: Summarize Perplexity's response in 2-3 sentences
-\item \textbf{Key Points}: Bullet list of main findings
-\item \textbf{Sources}: Numbered citations with titles and URLs
-\item \textbf{Follow-up}: Suggest related queries if relevant
-\end{enumerate}
+1. **Direct Answer**: Summarize Perplexity's response in 2-3 sentences
+2. **Key Points**: Bullet list of main findings
+3. **Sources**: Numbered citations with titles and URLs
+4. **Follow-up**: Suggest related queries if relevant
 
 ### Example Output
 
@@ -205,93 +250,84 @@ Structure your responses with:
 
 Perplexity offers different search modes. Select before querying:
 
-// Click focus dropdown
+```js
+// Take snapshot to locate the Focus mode control
+const snapshot = await browser_snapshot();
+
+// Click the Focus mode dropdown
 await browser_click({
-  selector: '[aria-label="Focus mode"]'
+  element: "Focus mode dropdown",
+  ref: "<ref from snapshot>"
 });
 
-// Select mode: All, Academic, Writing, Wolfram, YouTube, Reddit
+// Take new snapshot after dropdown opens, then click desired mode
+const dropdownSnapshot = await browser_snapshot();
 await browser_click({
-  selector: 'button:has-text("Academic")'  // For research papers
+  element: "Academic mode option",  // or All, Writing, Wolfram, YouTube, Reddit
+  ref: "<ref from dropdownSnapshot>"
 });
+```
 
 ### Pro Search Toggle
 
 Enable Pro Search for complex queries:
 
-// Toggle Pro search if available
-const proToggle = await browser_evaluate({
-  script: `document.querySelector('[aria-label="Pro Search"]')`
+```js
+const snapshot = await browser_snapshot();
+// The Pro Search toggle appears in the accessibility tree as a button/checkbox
+// whose name contains "Pro Search". Scan snapshot nodes for this name to get its ref,
+// then click it.
+// Example (ref value will differ each page load — always read from the live snapshot):
+//   Snapshot node: role: checkbox  name: "Pro Search"  ref: "e99"
+await browser_click({
+  element: "Pro Search toggle",
+  ref: "<ref for Pro Search node from snapshot>"
 });
-
-if (proToggle) {
-  await browser_click({
-    selector: '[aria-label="Pro Search"]'
-  });
-}
+```
 
 ### Image Analysis
 
-If user provides image URL for visual search:
+If the user provides a local image for visual search:
 
-// Click image upload button
+```js
+// Click the image/attach button (get ref from snapshot first)
+const snapshot = await browser_snapshot();
 await browser_click({
-  selector: '[aria-label="Attach image"]'
+  element: "Attach image button",
+  ref: "<ref from snapshot>"
 });
 
-// Choose file (if local)
-await browser_choose_file({
-  selector: 'input[type="file"]',
-  files: [imagePath]
-});
-
-// Or paste URL in dialog
-await browser_type({
-  selector: 'input[placeholder*="Image URL"]',
-  text: imageUrl
-});
+// The file chooser dialog opens — upload file(s)
+await browser_file_upload({ paths: ["/absolute/path/to/image.png"] });
+```
 
 ## Error Handling
 
 ### Common Failure Modes
 
-\begin{table}
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Error} & \textbf{Cause} & \textbf{Solution} \\
-\hline
-Login failure & Wrong credentials & Verify PERPLEXITY\_EMAIL/PASSWORD \\
-\hline
-Timeout & Slow response & Increase waitUntil timeout to 30s \\
-\hline
-Rate limit & Too many queries & Wait 60s between queries \\
-\hline
-Selector not found & UI changed & Use accessibility tree snapshot \\
-\hline
-\end{tabular}
-\caption{Perplexity WebUI error handling}
-\end{table}
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Login failure | Wrong credentials | Verify `PERPLEXITY_EMAIL` / `PERPLEXITY_PASSWORD` |
+| Timeout | Slow response | Increase poll timeout to 60 s |
+| Rate limit | Too many queries | Wait 60 s between queries |
+| Ref not found | UI changed | Call `browser_snapshot()` and inspect the updated tree |
 
 ### Retry Logic
 
+```js
 async function searchWithRetry(query, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await performSearch(query);
     } catch (error) {
       if (attempt === maxRetries) throw error;
-      
-      console.log(`Attempt ${attempt} failed, retrying in ${attempt * 2}s...`);
-      await sleep(attempt * 2000);
-      
-      // Reset browser state
-      await browser_navigate({
-        url: "https://www.perplexity.ai",
-        waitUntil: "networkidle"
-      });
+      await browser_wait_for({ time: attempt * 2 });
+      // Reset to home page before retrying
+      await browser_navigate({ url: "https://www.perplexity.ai" });
     }
   }
 }
+```
 
 ## Performance Optimization
 
@@ -299,16 +335,15 @@ async function searchWithRetry(query, maxRetries = 3) {
 
 Playwright MCP maintains browser context between queries. Leverage this:
 
-\begin{itemize}
-\item First query: Full authentication flow (10-15s)
-\item Subsequent queries: Skip auth, direct search (5-8s)
-\item Session expires: Re-authenticate automatically
-\end{itemize}
+- First query: Full authentication flow (10-15 s)
+- Subsequent queries: Skip auth, direct search (5-8 s)
+- Session expires: Re-authenticate automatically
 
 ### Parallel Queries
 
 For multiple searches, use sequential execution (Perplexity limits concurrent sessions):
 
+```js
 // WRONG: Parallel execution
 const results = await Promise.all(queries.map(q => search(q)));
 
@@ -316,130 +351,105 @@ const results = await Promise.all(queries.map(q => search(q)));
 const results = [];
 for (const query of queries) {
   results.push(await search(query));
-  await sleep(2000);  // 2s between queries
+  await browser_wait_for({ time: 2 });  // 2 s between queries
 }
+```
 
 ## Integration Example
 
 ### Full Search Function
 
+```js
 async function perplexitySearch(query, options = {}) {
-  const {
-    focusMode = "All",
-    proSearch = false,
-    maxWaitTime = 30000
-  } = options;
-  
+  const { focusMode = "All", proSearch = false } = options;
+
   // Navigate to Perplexity
-  await browser_navigate({
-    url: "https://www.perplexity.ai",
-    waitUntil: "networkidle"
-  });
-  
+  await browser_navigate({ url: "https://www.perplexity.ai" });
+
   // Check and handle authentication
-  const snapshot = await browser_snapshot();
-  if (snapshot.includes("Sign in")) {
-    await authenticatePerplexity();
+  let snapshot = await browser_snapshot();
+  const snapshotText = snapshot.toString();
+  if (snapshotText.includes("Sign in") || snapshotText.includes("Log in")) {
+    await authenticatePerplexity(snapshot);
+    snapshot = await browser_snapshot();
   }
-  
-  // Configure search mode
+
+  // Configure focus mode if requested
   if (focusMode !== "All") {
-    await browser_click({ selector: '[aria-label="Focus mode"]' });
-    await browser_click({ selector: `button:has-text("${focusMode}")` });
+    await browser_click({ element: "Focus mode dropdown", ref: "<ref from snapshot>" });
+    const dropdownSnapshot = await browser_snapshot();
+    await browser_click({ element: `${focusMode} option`, ref: "<ref from dropdownSnapshot>" });
+    snapshot = await browser_snapshot();
   }
-  
-  // Enable Pro search if requested
+
+  // Enable Pro Search if requested — find the toggle in the snapshot by its name
   if (proSearch) {
-    await browser_click({ selector: '[aria-label="Pro Search"]' });
+    // The Pro Search toggle typically appears as a button/checkbox named "Pro Search" in the tree
+    // After snapshot, iterate nodes to find the ref, then click it
+    const proToggleRef = /* parse snapshot for node with name "Pro Search" */;
+    if (proToggleRef) await browser_click({ element: "Pro Search toggle", ref: proToggleRef });
+    snapshot = await browser_snapshot();
   }
-  
+
   // Submit query
   await browser_type({
-    selector: 'textarea[placeholder*="Ask anything"]',
+    element: "search input",
+    ref: "<ref from snapshot>",
     text: query
   });
-  await browser_press({
-    selector: 'textarea[placeholder*="Ask anything"]',
-    key: "Enter"
-  });
-  
+  await browser_press_key({ key: "Enter" });
+
   // Wait for completion
-  await browser_evaluate({
-    script: `
-      new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Response timeout')), ${maxWaitTime});
-        const checkComplete = () => {
-          const stopButton = document.querySelector('[aria-label="Stop generating"]');
-          if (!stopButton || stopButton.disabled) {
-            clearTimeout(timeout);
-            resolve(true);
-          } else {
-            setTimeout(checkComplete, 500);
-          }
-        };
-        checkComplete();
-      });
-    `
+  await browser_wait_for({ textGone: "Stop generating" });
+
+  // Extract answer
+  const answer = await browser_evaluate({
+    function: `() => {
+      const el = document.querySelector('[class*="answer"], [data-testid="answer"]');
+      return el ? el.innerText.trim() : "";
+    }`
   });
-  
-  // Extract results
-  const answer = await browser_get_text({
-    selector: 'div[class*="answer"]'
-  });
-  
+
+  // Extract citations
   const sources = await browser_evaluate({
-    script: `
-      Array.from(document.querySelectorAll('[data-testid="citation-link"]'))
-        .map(link => ({
-          title: link.textContent.trim(),
-          url: link.href,
-          citation: link.getAttribute('data-citation-number')
-        }));
-    `
+    function: `() => Array.from(document.querySelectorAll('[data-testid="citation-link"]'))
+      .map(link => ({
+        title: link.textContent.trim(),
+        url: link.href,
+        citation: link.getAttribute('data-citation-number')
+      }))`
   });
-  
-  return {
-    query,
-    answer,
-    sources,
-    focusMode,
-    proSearch,
-    timestamp: new Date().toISOString()
-  };
+
+  return { query, answer, sources, focusMode, proSearch, timestamp: new Date().toISOString() };
 }
+```
 
 ## Usage Guidelines
 
 ### Cost Management
 
-\begin{itemize}
-\item Pro subscription: \$20/month for unlimited searches
-\item No per-query API costs
-\item Browser overhead: ~100-200 MB RAM per session
-\item Typical query: 5-15 seconds end-to-end
-\end{itemize}
+- Pro subscription: $20/month for unlimited searches
+- No per-query API costs
+- Browser overhead: ~100-200 MB RAM per session
+- Typical query: 5-15 seconds end-to-end
 
 ### When to Prefer API Over WebUI
 
 Use Perplexity's Search API instead if:
 
-\begin{itemize}
-\item You need sub-5-second responses
-\item Running bulk/batch queries (>50/day)
-\item Building production services
-\item Require structured JSON responses
-\item Need programmatic reliability guarantees
-\end{itemize}
+- You need sub-5-second responses
+- Running bulk/batch queries (>50/day)
+- Building production services
+- Require structured JSON responses
+- Need programmatic reliability guarantees
 
 Use this WebUI skill if:
 
-\begin{itemize}
-\item You have Pro subscription (unlimited free queries)
-\item Running 5-20 queries per day
-\item Need Pro Search features (deep research mode)
-\item Want to avoid API credit costs during prototyping
-\item Comfortable with 10-15s latency
-\end{itemize}
+- You have a Pro subscription (unlimited free queries)
+- Running 5-20 queries per day
+- Need Pro Search features (deep research mode)
+- Want to avoid API credit costs during prototyping
+- Comfortable with 10-15 s latency
 
 ## Troubleshooting
 
@@ -447,35 +457,33 @@ Use this WebUI skill if:
 
 If Playwright MCP loses browser state:
 
+```bash
 # Reset Playwright browser data
 rm -rf ~/Library/Application\ Support/ms-playwright/
 playwright install chromium
+```
 
-### Selector Changes
+### Element Not Found
 
-Perplexity updates UI regularly. If selectors break:
+Perplexity updates its UI regularly. If a `ref` lookup fails:
 
-\begin{enumerate}
-\item Use \texttt{browser\_snapshot()} to get accessibility tree
-\item Find updated selectors via \texttt{data-testid} or \texttt{aria-label}
-\item Update selectors in skill file
-\item Submit PR to skill repository with fix
-\end{enumerate}
+1. Call `browser_snapshot()` to get the current accessibility tree
+2. Locate the element by its `aria-label`, `role`, or visible text in the tree
+3. Use the new `ref` value
+4. Update this skill file with the new selector description and submit a PR
 
 ### Rate Limiting
 
 If you hit rate limits:
 
-\begin{itemize}
-\item Reduce query frequency to 1 per 2-3 seconds
-\item Check for concurrent sessions (max 1 per account)
-\item Verify Pro subscription is active
-\item Consider switching to API for high-volume needs
-\end{itemize}
+- Reduce query frequency to 1 per 2-3 seconds
+- Check for concurrent sessions (max 1 per account)
+- Verify Pro subscription is active
+- Consider switching to API for high-volume needs
 
 ## References
 
-[1] Playwright MCP Documentation. https://github.com/spiceman161/playwright-mcp
+[1] Playwright MCP — Standard tool reference. https://github.com/microsoft/playwright-mcp
 
 [2] OpenClaw Skills Guide 2026. https://techsona.dev/blog/openclaw-skills-guide-2026
 
@@ -484,6 +492,17 @@ If you hit rate limits:
 [4] Building AI Agents with Playwright MCP. https://www.linkedin.com/posts/bichev_aiinfrastructure-llmengineering-firecrawl-activity-7349534267925831680
 
 ## Changelog
+
+**v1.1.0** (2026-03-08)
+- Fixed all tool calls to comply with MCP Playwright standard
+- Replaced CSS selector pattern with accessibility-tree `ref` pattern (snapshot-first)
+- Replaced `browser_press` with `browser_press_key` (global keypress, no element target)
+- Replaced `browser_evaluate { script }` with `browser_evaluate { function }`
+- Replaced non-standard `browser_get_text` with `browser_evaluate`
+- Replaced `browser_choose_file` with `browser_file_upload`
+- Removed unsupported `waitUntil` param from `browser_navigate`; use `browser_wait_for` instead
+- Replaced LaTeX formatting with standard Markdown
+- Updated references to use canonical Playwright MCP repository
 
 **v1.0.0** (2026-03-07)
 - Initial release

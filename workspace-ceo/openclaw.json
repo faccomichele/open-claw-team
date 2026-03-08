@@ -5,7 +5,9 @@
     "telegram-notifications",
     "project-planning",
     "github-issue-ops",
-    "github-read-access"
+    "github-read-access",
+    "self-improving",
+    "perplexity-webui-search"
   ],
   "tools": {
     "allow": [

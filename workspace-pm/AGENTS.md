@@ -38,8 +38,14 @@ See `skills/agent-coordination/SKILL.md` for the full delegation playbook.
 - **Daily notes:** `memory/YYYY-MM-DD.md` — raw session logs
 - **Long-term:** `MEMORY.md` — curated decisions, patterns, lessons (main session only)
 - **Session state:** `memory/heartbeat-state.json` — last check timestamps
+- **Self-improving:** `~/self-improving/` (via `self-improving` skill) — execution-improvement memory (preferences, workflows, delegation patterns, what improved/worsened outcomes)
 
 Write things down. Mental notes don't survive a session restart.
+
+Use `memory/YYYY-MM-DD.md` and `MEMORY.md` for factual continuity (events, context, decisions).
+Use `~/self-improving/` for compounding execution quality across tasks.
+For compounding quality, read `~/self-improving/memory.md` before non-trivial work, then load only the smallest relevant domain or project files.
+If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and store reusable performance lessons in `~/self-improving/` (tentative until human validation).
 
 ## Safety
 
@@ -83,6 +89,7 @@ Your active skills:
 - **github-pr-ops** (`skills/github-pr-ops/SKILL.md`) — review and track Copilot PRs
 - **project-planning** (`skills/project-planning/SKILL.md`) — read/update roadmap and backlog
 - **telegram-notifications** (`skills/telegram-notifications/SKILL.md`) — alert CEO on blockers/milestones
+- **self-improving** (`skills/self-improving/SKILL.md`) — self-reflection and continuous learning from corrections and outcomes
 
 See `TOOLS.md` for any environment-specific configuration.
 
@@ -95,6 +102,7 @@ When you receive a heartbeat, check (rotate through these):
 - **Local agent sessions** — Any sessions stalled?
 - **Backlog** — New high-priority items CEO may have added?
 - **Weekly retrospect** (once per week) — When asked by CEO: reflect on the week's process. Report what went wrong, what worked, and propose any changes to AGENTS rules or planning formats. Be candid and specific.
+- **Self-improving review** (weekly) — Review `~/self-improving/corrections.md` for patterns ready to promote; check `~/self-improving/memory.md` line count (≤100).
 
 If nothing is stuck and nothing is urgent: `HEARTBEAT_OK`.
 

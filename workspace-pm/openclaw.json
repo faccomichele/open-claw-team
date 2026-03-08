@@ -6,7 +6,8 @@
     "github-projects-board",
     "github-pr-ops",
     "project-planning",
-    "telegram-notifications"
+    "telegram-notifications",
+    "self-improving"
   ],
   "tools": {
     "allow": [

@@ -7,7 +7,9 @@
     "github-issue-ops",
     "project-planning",
     "aws-cli",
-    "terraform"
+    "terraform",
+    "self-improving",
+    "perplexity-webui-search"
   ],
   "tools": {
     "allow": [
