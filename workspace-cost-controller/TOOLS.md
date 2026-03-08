@@ -27,9 +27,23 @@ gh api /orgs/ORG/settings/billing/actions
 
 ## Cost Categories to Track
 
-- `cloud_infra` — AWS/GCP/Azure (read from raw-costs exports)
+- `cloud_infra` — AWS/GCP/Azure/DigitalOcean (read from raw-costs exports)
 - `github_actions` — CI/CD minutes (via `gh api`)
 - `openclaw_tokens` — LLM API costs (from token logs)
+
+## DigitalOcean Billing
+
+```bash
+# Account balance
+curl -s -X GET "https://api.digitalocean.com/v2/customers/my/balance" \
+  -H "Authorization: Bearer $DO_TOKEN" | jq '.'
+
+# Billing history
+doctl invoice list
+
+# List all Droplets (resource inventory)
+doctl compute droplet list --format ID,Name,Status,Region,Size,PublicIPv4
+```
 
 ## AWS Cost Explorer
 

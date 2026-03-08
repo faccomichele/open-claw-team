@@ -6,6 +6,7 @@
     "telegram-notifications",
     "project-planning",
     "aws-cli",
+    "digitalocean-cli",
     "self-improving"
   ],
   "tools": {
