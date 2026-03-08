@@ -1,11 +1,11 @@
 ---
 name: perplexity-webui-search
 description: Perform web searches via Perplexity WebUI using Playwright automation. Extract answers, sources, and citations for research tasks.
-version: 1.1.0
+version: 1.2.0
 author: Michele Facco
 requires:
-  skills:
-    - playwright-mcp  # Spiceman161/playwright-mcp from ClawHub
+  bins:
+    - npx
   environment:
     - PERPLEXITY_EMAIL
     - PERPLEXITY_PASSWORD
@@ -46,18 +46,35 @@ export PERPLEXITY_EMAIL="your-email@example.com"
 export PERPLEXITY_PASSWORD="your-password"
 ```
 
-### Playwright MCP Installation
+### Playwright MCP Setup
 
-This skill requires the base `playwright-mcp` skill from ClawHub:
+This skill drives the browser through the official **`@playwright/mcp`** package. Install it directly — no third-party skill wrapper needed:
 
 ```bash
-npx -y @lobehub/market-cli skills install Spiceman161/playwright-mcp
+# Install Playwright MCP server
+npm install -g @playwright/mcp@latest
+
+# Install Chromium browser
+npx playwright install chromium
 ```
 
-Verify Chromium is installed:
+Then add the MCP server to your OpenClaw (or Claude Desktop) config:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--browser", "chromium"]
+    }
+  }
+}
+```
+
+Verify the server starts correctly:
 
 ```bash
-playwright install chromium
+npx @playwright/mcp@latest --help
 ```
 
 ## MCP Playwright Tool Reference
@@ -458,9 +475,12 @@ Use this WebUI skill if:
 If Playwright MCP loses browser state:
 
 ```bash
-# Reset Playwright browser data
+# Reinstall Chromium for the official package
+npx playwright install chromium
+
+# Or clear cached browser data
 rm -rf ~/Library/Application\ Support/ms-playwright/
-playwright install chromium
+npx playwright install chromium
 ```
 
 ### Element Not Found
@@ -492,6 +512,11 @@ If you hit rate limits:
 [4] Building AI Agents with Playwright MCP. https://www.linkedin.com/posts/bichev_aiinfrastructure-llmengineering-firecrawl-activity-7349534267925831680
 
 ## Changelog
+
+**v1.2.0** (2026-03-08)
+- Replaced ClawHub super-skill dependency (`Spiceman161/playwright-mcp`) with direct `@playwright/mcp` package
+- Updated prerequisites to show `npm install -g @playwright/mcp@latest` and MCP server config
+- Updated troubleshooting to use `npx playwright install chromium`
 
 **v1.1.0** (2026-03-08)
 - Fixed all tool calls to comply with MCP Playwright standard
