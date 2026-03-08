@@ -35,6 +35,13 @@ gh run list --repo OWNER/REPO --limit 20 --json databaseId,conclusion,status,wor
 - CloudFormation stacks: use `aws cloudformation describe-stacks` to inspect deployed state
 - Tag all resources: `repo`, `env` (`DEV`/`PROD`), `managed-by` (`terraform`)
 
+## DigitalOcean / Infrastructure
+
+- Token stored in OpenClaw keychain — run `doctl auth init` once to configure; never hardcode tokens
+- DNS records: `doctl compute domain records list DOMAIN` and `doctl compute domain records create/update/delete`
+- Prefer IaC (Terraform with `digitalocean` provider) for persistent resources; use `doctl` for DNS one-offs and inspection
+- Tag all Droplets with `repo`, `env`, and `managed-by` per team policy
+
 ## Notes
 
 Add any project-specific architectural patterns, preferred libraries, or technical conventions here.
