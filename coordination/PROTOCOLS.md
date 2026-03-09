@@ -104,8 +104,35 @@ Use these GitHub labels consistently across all project repos:
 | `type:bug` | Bug fix |
 | `type:research` | Market / technical research |
 | `type:cost` | Cost / budget analysis |
+| `type:backend` | Backend-specific work (API, DB, services) |
+| `type:frontend` | Frontend-specific work (React, UI) |
+| `type:infra` | Infrastructure / CI/CD work |
+| `type:test` | Testing / QA work |
 
 PM is responsible for keeping `owner:*` labels accurate at all times.
+
+### Issue Assignment Strategy
+
+When PM triages a new issue, apply the following mapping to determine the assignee and set the corresponding `owner:*` label:
+
+| Issue label(s) | Assign to | `owner:*` label |
+|---|---|---|
+| `type:feature` + `type:backend` (or backend scope is clear) | `dev-backend` Copilot agent | `owner:dev-backend` |
+| `type:feature` + `type:frontend` (or frontend scope is clear) | `dev-frontend` Copilot agent | `owner:dev-frontend` |
+| `type:feature` (full-stack or unclear) | PM reviews scope; split into sub-issues or assign to the primary affected layer | — |
+| `type:backend` | `dev-backend` Copilot agent | `owner:dev-backend` |
+| `type:frontend` | `dev-frontend` Copilot agent | `owner:dev-frontend` |
+| `type:bug` | Agent that owns the affected area (`owner:*` label on the area); PM decides if cross-cutting | per area |
+| `type:infra` | `dev-infra` Copilot agent | `owner:dev-infra` |
+| `type:test` | `test-specialist` Copilot agent | `owner:test-specialist` |
+| `type:research` | `biz-research` local agent | `owner:biz-research` |
+| `type:cost` | `cost-controller` local agent | `owner:cost-controller` |
+| Architecture / design review | `tech-lead` local agent | `owner:tech-lead` |
+
+**Rules:**
+- PM assigns at most **one** primary owner per issue. Split the issue if multiple agents are needed.
+- For `type:bug`, PM examines the affected subsystem and assigns the agent responsible for that area. If the bug is cross-cutting, PM coordinates a fix plan and may assign the agent who owns the most impacted layer.
+- Issues with no matching label default to `owner:pm` until triaged.
 
 ### CI check naming
 
@@ -117,6 +144,27 @@ When agents are wired into CI workflows, use these check names so the Checks tab
 | `Tech Lead – architecture review` | Tech Lead |
 | `QA Agent – test summary` | test-specialist |
 | `Cost Controller – budget check` | Cost Controller |
+
+## GitHub Projects Mandate
+
+All actionable and trackable work items **must** be attached to a GitHub Project board. This applies to:
+
+- Issues (features, bugs, research tasks, cost analyses)
+- Pull Requests
+- Milestones and sprint goals
+- Roadmap items
+- Effort estimates and task breakdowns
+
+**Who can create a project board:** Both **PM** and **CEO** agents may create a GitHub Project if one does not yet exist for a given project repo. Use the repo-scoped board at `https://github.com/<owner>/<repo>/projects`.
+
+**Workflow:**
+1. Before delegating any work, PM verifies that a GitHub Project board exists for the target project repo.
+2. If no board exists, PM (or CEO) creates one using the **"Team backlog"** template (Kanban columns: `Backlog`, `In Progress`, `In Review`, `Done`).
+3. Every new issue or PR **must** be added to the project board at creation time — PM is responsible for this.
+4. Sprint columns must map to the current sprint dates and goal defined in `coordination/SPRINT.md`.
+5. Closing an issue without it being on the project board is not permitted — PM must add it retroactively and note the gap in the next sprint review.
+
+> **Why this matters:** GitHub Projects provide the single source of truth for work status. Agents must never track progress only in chat messages, Telegram, or workspace files — the project board is authoritative.
 
 ## Human-Only Decisions
 

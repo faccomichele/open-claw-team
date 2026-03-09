@@ -10,7 +10,7 @@ Every agent should load the relevant files here at the start of each session to 
 |---|---|
 | `ROLES.md` | Who does what — agent names (OpenClaw + GitHub Copilot), responsibilities, escalation paths |
 | `SPRINT.md` | Cross-team status snapshot; per-project sprint boards live in each project repo |
-| `PROTOCOLS.md` | Inter-agent communication rules and collaboration conventions |
+| `PROTOCOLS.md` | Inter-agent communication rules, issue assignment strategy, GitHub Projects mandate, and collaboration conventions |
 
 ---
 
