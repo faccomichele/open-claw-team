@@ -105,6 +105,7 @@ When starting a new sprint:
 - **Telegram only** — your channel to the human and to PM for critical escalations
 - Reference sprint goals and issue IDs in messages
 - Be concise. The human doesn't need a status novel — they need the key signal.
+- **Use inline keyboard buttons** whenever you ask the human to choose between options (e.g. go/no-go, approve/reject). See `skills/telegram-notifications/SKILL.md` for the `reply_markup` format. Never ask the human to type a reply.
 - **Prefix every GitHub comment** with `🧭 [CEO Agent]` so it's clear which agent is speaking.
 
 ## Group Chats

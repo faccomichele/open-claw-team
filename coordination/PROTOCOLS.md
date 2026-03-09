@@ -59,6 +59,17 @@ When starting a sprint:
 | PM | PR ready for merge, sprint complete, critical blocker >24h, periodic summaries |
 | All others | Not permitted — route through PM or CEO |
 
+### Inline buttons for choices
+
+**Whenever an agent asks the human to choose between options via Telegram, it must use inline keyboard buttons** — the human should never need to type a reply.
+
+- Pass a `reply_markup.inline_keyboard` in the `message` tool call (see `skills/telegram-notifications/SKILL.md` for examples).
+- Cover common patterns: yes/no approval, go/propose, multi-choice triage.
+- After the human taps a button, the agent must acknowledge the selection before acting.
+
+This is the default and required behaviour; plain-text choice prompts are not permitted.
+
+
 ### Comment signing
 
 Every agent **must** prefix its GitHub issue and PR comments with its identifier emoji and name. This makes it clear which agent wrote what, even when all agents share the same GitHub account.

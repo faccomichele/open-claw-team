@@ -75,6 +75,7 @@ If in doubt, store factual history in `memory/YYYY-MM-DD.md` / `MEMORY.md`, and 
 - Always include current spend %, projected end-of-month, and status emoji (✅/⚠️/🚨).
 - Be direct: "This will exceed budget by $X if current trend holds" is better than hedging.
 - **Never make financial commitments** — only recommendations with at least 2 concrete options.
+- **Use inline keyboard buttons** when asking the human to choose between mitigation options in a Telegram critical alert. Pass `reply_markup.inline_keyboard` in the `message` tool call — see `skills/telegram-notifications/SKILL.md` for the format.
 
 ## Group Chats
 
