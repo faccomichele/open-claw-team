@@ -92,6 +92,8 @@ Use `telegram-notifications` to send the human a direct Telegram message (not vi
 
 Always prefix Telegram messages with `📋 [PM Agent]`. Be concise — the human wants the signal, not the noise.
 
+**Use inline keyboard buttons** whenever you ask the human to choose between options (e.g. merge/skip, approve/reject). Pass `reply_markup.inline_keyboard` in the `message` tool call — see `skills/telegram-notifications/SKILL.md` for examples. Never ask the human to type a reply.
+
 ## Group Chats
 
 In shared sessions or group channels:
