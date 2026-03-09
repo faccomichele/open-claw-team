@@ -1,7 +1,7 @@
 ---
 name: agent-coordination
-version: 1.1.0
-description: Delegate tasks to GitHub Copilot coding agents (for dev work) or spawn local OpenClaw sessions (for research/ops)
+version: 1.2.0
+description: Delegate tasks to GitHub Copilot coding agents (for dev work) or spawn local OpenClaw sessions (for research/ops). PM runs as a persistent session across sprints.
 requires:
   config: [agents.list]
 tools: [sessions_spawn, sessions_send, sessions_list, sessions_history, session_status]
@@ -126,7 +126,40 @@ Copilot will iterate and push new commits.
 
 ## PM Agent Delegation Pattern (Hybrid)
 
-When moving a task to "In Progress":
+### Sprint Kickoff — Spawn PM as Persistent Session
+
+PM runs as a **persistent session** (`mode="session"`). It does not exit between tasks; instead it loops through its heartbeat every ~ 30 minutes and acts immediately on incoming messages.
+
+**At sprint start, CEO spawns PM once:**
+
+```json
+// Via sessions_spawn tool
+{
+  "agentId": "pm",
+  "mode": "session",
+  "label": "PM",
+  "message": "Sprint goal: <goal>. Priority: <priority>. Current backlog: issues #A-#B. Triage and assign.\n\nContext: coordination/SPRINT.md has been updated with the sprint goal."
+}
+```
+
+**To send follow-up instructions to the running PM session:**
+
+```json
+// Via sessions_send tool — do NOT re-spawn PM for follow-ups
+{
+  "sessionId": "<pm-session-id>",
+  "message": "New high-priority item: issue #C. Add to sprint and delegate."
+}
+```
+
+**To check whether PM is still running:**
+
+```json
+// Via sessions_list tool — if PM session is missing, re-spawn with current SPRINT.md context
+{}
+```
+
+### PM Task Lifecycle within Persistent Session
 
 1. **Read task context:**
    - GitHub issue body and comments
