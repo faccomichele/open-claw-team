@@ -1,24 +1,27 @@
 #!/bin/bash
 
+WD="${1:-"zeroclaw"}"
+echo "Working directory: $WD"
+
 echo 'Exporting Skills...'
-cp -Rf ./skills ~/.openclaw/
+cp -Rf ./skills ~/$WD/
 echo '...done'
 
 echo 'Exporting Agents (md files only)...'
 for src_dir in workspace-*/; do
   name=$(basename "$src_dir")
-  mkdir -p ~/.openclaw/"$name"
-  cp -f "$src_dir/"*.md ~/.openclaw/"$name"/ 2>/dev/null || true
+  mkdir -p ~/$WD/"$name"
+  cp -f "$src_dir/"*.md ~/$WD/"$name"/ 2>/dev/null || true
 done
 echo '...done'
 
 echo 'Exporting Coordination files...'
-mkdir -p ~/.openclaw/coordination
-cp -f ./coordination/*.md ~/.openclaw/coordination/ 2>/dev/null || true
+mkdir -p ~/$WD/coordination
+cp -f ./coordination/*.md ~/$WD/coordination/ 2>/dev/null || true
 echo '...done'
 
-echo 'Syncing agent definitions to ~/.openclaw/openclaw.json...'
-MAIN_CONFIG=~/.openclaw/openclaw.json
+echo 'Syncing agent definitions to ~/$WD/openclaw.json...'
+MAIN_CONFIG=~/$WD/openclaw.json
 # Ensure main config exists with an agents list array
 if [ ! -f "$MAIN_CONFIG" ]; then
   echo '{"agents":{"list":[]}}' > "$MAIN_CONFIG"
