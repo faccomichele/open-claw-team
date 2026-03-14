@@ -1,11 +1,14 @@
 #!/bin/bash
 
+WD="${1:-"zeroclaw"}"
+echo "Working directory: $WD"
+
 echo 'Importing Skills...'
-cp -Rf ~/.openclaw/skills .
+cp -Rf ~/$WD/skills .
 echo '...done'
 
 echo 'Importing Agents (md files only)...'
-for src_dir in ~/.openclaw/workspace-*/; do
+for src_dir in ~/$WD/workspace-*/; do
   name=$(basename "$src_dir")
   mkdir -p "./$name"
   cp -f "$src_dir/"*.md "./$name/" 2>/dev/null || true
@@ -14,11 +17,11 @@ echo '...done'
 
 echo 'Importing Coordination files...'
 mkdir -p ./coordination
-cp -f ~/.openclaw/coordination/*.md ./coordination/ 2>/dev/null || true
+cp -f ~/$WD/coordination/*.md ./coordination/ 2>/dev/null || true
 echo '...done'
 
-echo 'Importing agent definitions from ~/.openclaw/openclaw.json...'
-MAIN_CONFIG=~/.openclaw/openclaw.json
+echo 'Importing agent definitions from ~/$WD/openclaw.json...'
+MAIN_CONFIG=~/$WD/openclaw.json
 if [ -f "$MAIN_CONFIG" ]; then
   for workspace_json in workspace-*/openclaw.json; do
     if [ -f "$workspace_json" ]; then
@@ -47,7 +50,7 @@ if [ -f "$MAIN_CONFIG" ]; then
     fi
   done
 else
-  echo '  ~/.openclaw/openclaw.json not found — skipping agent definition import'
+  echo '  ~/$WD/openclaw.json not found — skipping agent definition import'
 fi
 echo '...done'
 
