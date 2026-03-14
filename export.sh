@@ -1,7 +1,11 @@
 #!/bin/bash
 
-WD="${1:-"zeroclaw"}"
+WD="${1:-".zeroclaw"}"
+CF="${2:-"config.toml"}"
+SN="${3:-"zeroclaw.service"}"
 echo "Working directory: $WD"
+echo "Config file: $CF"
+echo "Service name: $SN"
 
 echo 'Exporting Skills...'
 cp -Rf ./skills ~/$WD/
@@ -20,13 +24,13 @@ mkdir -p ~/$WD/coordination
 cp -f ./coordination/*.md ~/$WD/coordination/ 2>/dev/null || true
 echo '...done'
 
-echo 'Syncing agent definitions to ~/$WD/openclaw.json...'
-MAIN_CONFIG=~/$WD/openclaw.json
+echo "Syncing agent definitions to ~/$WD/$CF..."
+MAIN_CONFIG=~/$WD/$CF
 # Ensure main config exists with an agents list array
 if [ ! -f "$MAIN_CONFIG" ]; then
   echo '{"agents":{"list":[]}}' > "$MAIN_CONFIG"
 fi
-for workspace_json in workspace-*/openclaw.json; do
+for workspace_json in workspace-*/$CF; do
   if [ -f "$workspace_json" ]; then
     agent_id=$(jq -r '.id' "$workspace_json")
     skills=$(jq '.skills' "$workspace_json")
@@ -57,6 +61,6 @@ for workspace_json in workspace-*/openclaw.json; do
 done
 echo '...done'
 
-echo 'Restarting OpenClaw gateway...'
-systemctl --user restart openclaw-gateway.service
+echo "Restarting $SN..."
+systemctl --user restart $SN
 echo '...done'
